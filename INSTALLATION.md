@@ -81,8 +81,7 @@ cd mediawiki
 sudo composer install --no-dev
 ```
 
-
-Visit http://mediawiki.local/
+## Visit http://mediawiki.local/
 
 Click to complete installation link then download LocaleSettings.php paste it to your /var/www/mediawiki/ root folder.
 
@@ -115,11 +114,7 @@ sudo setfacl -R -d -m u:ersin:rwx /var/www/mediawiki
 sudo setfacl -R -d -m u:www-data:rwx /var/www/mediawiki
 ```
 
-Böylece hem `ersin` hem `www-data` **her zaman yazabilir**.
-
-İstersen ben bunu tek bir **MediaWiki uyumlu ACL komut bloğu** hâline getirip verebilirim, böylece tüm klasör ve dosyalara güvenli şekilde uygulanır. Bunu yapayım mı?
-
-
+So, it can always write to both `ersin` and `www-data` folders.
 
 ## Installing a Default Skin
 
