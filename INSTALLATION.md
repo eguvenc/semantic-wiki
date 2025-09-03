@@ -121,7 +121,6 @@ Böylece hem `ersin` hem `www-data` **her zaman yazabilir**.
 
 
 
-
 ## Installing a Default Skin
 
 Clone a skin
