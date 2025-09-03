@@ -72,12 +72,55 @@ then Clone the latest project repo.
 
 
 ```sh
-wget https://releases.wikimedia.org/mediawiki/1.41/mediawiki-1.41.5.tar.gz
-tar -xvzf mediawiki-1.41.5.tar.gz
-mv mediawiki-1.41.5 /var/www/mediawiki
+cd /var/www/
+wget https://releases.wikimedia.org/mediawiki/1.39/mediawiki-1.39.13.tar.gz
+tar -xvzf mediawiki-1.39.13.tar.gz
+mv mediawiki-1.39.13 mediawiki
+chown -R www-data:www-data mediawiki
 cd mediawiki
 sudo composer install --no-dev
 ```
+
+
+Visit http://mediawiki.local/
+
+Click to complete installation link then download LocaleSettings.php paste it to your /var/www/mediawiki/ root folder.
+
+You may got permission error for your user.
+
+## Fixing permission errors:
+
+1. Install ACL for Ubuntu
+
+```bash
+sudo apt install acl
+```
+
+2. Add write permissions to MediaWiki components for your user e.g. `ersin`:
+
+```bash
+sudo setfacl -R -m u:ersin:rwx /var/www/mediawiki
+```
+
+3. Write permission for the web server (`www-data`):
+
+```bash
+sudo setfacl -R -m u:www-data:rwx /var/www/mediawiki
+```
+
+4. Ensure that newly created files and folders have the same permissions as the ACL:
+
+```bash
+sudo setfacl -R -d -m u:ersin:rwx /var/www/mediawiki
+sudo setfacl -R -d -m u:www-data:rwx /var/www/mediawiki
+```
+
+Böylece hem `ersin` hem `www-data` **her zaman yazabilir**.
+
+İstersen ben bunu tek bir **MediaWiki uyumlu ACL komut bloğu** hâline getirip verebilirim, böylece tüm klasör ve dosyalara güvenli şekilde uygulanır. Bunu yapayım mı?
+
+
+
 
 ## Installing a Default Skin
 
