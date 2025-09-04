@@ -67,7 +67,7 @@ Date of birth: {{{|Date of birth}}}
 
 3. When adding a new page, go to:
    
-👉 `http://mediawiki.local/index.php/Special:FormEdit/Person/James_Brown`
+👉 http://mediawiki.local/index.php/Special:FormEdit/Person/James_Brown
 
 With this form, you can create new "Person" pages using a **visual form interface**.
 
