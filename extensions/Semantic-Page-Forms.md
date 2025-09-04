@@ -78,16 +78,13 @@ If you want to add semantic data to persons, extend the `Template:Person` as fol
 ```
 
 You can then review the semantic data on the page:
-👉 `Special:Browse`
+
+👉 http://mediawiki.local/index.php/Special:Browse
 
 ---
 
 ## Verification
 
-* `Special:Version` → Do PageForms and Semantic MediaWiki appear in the list?
-* `Special:FormEdit/Person` → Does the form work correctly?
-* `Special:Browse/PageName` → Were the semantic properties stored successfully?
-
----
-
-Would you like me to also translate the example labels ("First name", "Last name", etc.) into **more wiki-friendly field names** (e.g., `Given name`, `Family name`), or should I keep them exactly as-is?
+👉 http://mediawiki.local/index.php/Special:Version  → Do PageForms and Semantic MediaWiki appear in the list?
+👉 http://mediawiki.local/index.php/Special:FormEdit/Person  → Does the form work correctly?
+👉 http://mediawiki.local/index.php/Special:Browse/PageName → Were the semantic properties stored successfully?
