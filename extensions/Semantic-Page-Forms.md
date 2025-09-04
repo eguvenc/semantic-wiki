@@ -47,9 +47,13 @@ php maintenance/update.php
 1. **Create a template**: `Template:Person`
 
 ```wiki
-First name: {{{|First name}}}
-Last name: {{{|Last name}}}
-Date of birth: {{{|Date of birth}}}
+<includeonly>
+{{#set: FirstName={{{First name|}}}; LastName={{{Last name|}}}; DateOfBirth={{{Date of birth|}}} }}
+[[Category:Person]]
+<!-- display section -->
+'''Name:''' {{{FirstName}}} {{{LastName}}}<br/>
+'''Date of Birth:''' {{{DateOfBirth}}}
+</includeonly>
 ```
 
 2. **Create a form**: `Form:Person`
