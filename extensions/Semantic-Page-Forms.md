@@ -86,6 +86,6 @@ You can then review the semantic data on the page:
 
 ## Verification
 
-http://mediawiki.local/index.php/Special:Version  → Do PageForms and Semantic MediaWiki appear in the list?
-http://mediawiki.local/index.php/Special:FormEdit/Person  → Does the form work correctly?
-http://mediawiki.local/index.php/Special:Browse/PageName → Were the semantic properties stored successfully?
+* http://mediawiki.local/index.php/Special:Version → Do PageForms and Semantic MediaWiki appear in the list ? ✅ / ❌
+* http://mediawiki.local/index.php/Special:FormEdit/Person  → Does the form work correctly ? ✅ / ❌
+* http://mediawiki.local/index.php/Special:Browse/PageName → Were the semantic properties stored successfully ? ✅ / ❌
