@@ -73,23 +73,27 @@ php maintenance/update.php
    
 👉 http://mediawiki.local/index.php/James_Brown
 
+CLick to Create a Page.
+
+```wiki
+{{Person
+|FirstName=James
+|LastName=Brown
+|DateOfBirth=1933-05-03
+}}
+```
+- Result
+
+James Brown
+Jump to navigationJump to search
+Name: James Brown
+Date of Birth: 1933-05-03
+
+Category: Person
+
 4. When editing a existing page, go to:
 
 👉 http://mediawiki.local/index.php/Special:FormEdit/Person/James_Brown
-
-With this form, you can create new "Person" pages using a **visual form interface**.
-
----
-
-## Adding Semantic Properties
-
-If you want to add semantic data to persons, extend the `Template:Person` as follows:
-
-```wiki
-[[Has first name::{{{|First name|}}}]]
-[[Has last name::{{{|Last name|}}}]]
-[[Date of birth::{{{|Date of birth|}}}]]
-```
 
 You can then review the semantic data on the page:
 
