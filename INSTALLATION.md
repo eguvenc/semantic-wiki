@@ -1,6 +1,13 @@
 
 # Installation
 
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y apache2 mariadb-server php libapache2-mod-php php-mysql \
+  php-intl php-mbstring php-xml php-apcu php-curl php-zip unzip git composer curl \
+  openjdk-17-jdk
+```
+
 Create a new database for your new Wiki project.
 
 
