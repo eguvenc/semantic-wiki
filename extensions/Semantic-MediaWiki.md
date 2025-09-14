@@ -3,13 +3,14 @@
 
 ```sh
 cd /var/www/mediawiki
-composer require mediawiki/semantic-media-wiki "^5.0"
+composer require mediawiki/semantic-media-wiki "^6.0"
 ```
 
 Add the following lines to LocalSettings.php:
 
 ```php
-## enable SMW extension
+#
+# Semantic Wiki Extension
 #
 enableSemantics( 'mediawiki.local' ); // veya kendi domainin
 wfLoadExtension( 'SemanticMediaWiki' );
@@ -65,7 +66,7 @@ On that page, you should see the **Semantic MediaWiki** extension and optionally
 If Semantic MediaWiki does not appear at all, run the following command:
 
 ```bash
-composer require mediawiki/semantic-media-wiki "^5.0"
+composer require mediawiki/semantic-media-wiki "^6.0"
 ```
 
 ---

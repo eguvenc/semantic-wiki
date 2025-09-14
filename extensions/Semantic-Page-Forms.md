@@ -24,15 +24,17 @@ PageForms compatible version: **5.x**
 ## Installing PageForms
 
 ```sh
-composer require mediawiki/page-forms "^5.0"
+composer require mediawiki/page-forms
 ```
 
 Then add the following line to your `LocalSettings.php`:
 
 ```php
+#
+# Page Forms Extension
+#
 wfLoadExtension( 'PageForms' );
 ```
-
 
 ```
 php maintenance/update.php
@@ -46,6 +48,8 @@ php maintenance/update.php
 
 1. **Create a template**: `Template:Person`
 
+http://mediawiki.local/index.php/Template:Person
+
 ```wiki
 <includeonly>
 {{#set: FirstName={{{First name|}}}; LastName={{{Last name|}}}; DateOfBirth={{{Date of birth|}}} }}
@@ -57,6 +61,8 @@ php maintenance/update.php
 ```
 
 2. **Create a form**: `Form:Person`
+
+http://mediawiki.local/index.php/Form:Person
 
 ```wiki
 {{{for template|Person}}}

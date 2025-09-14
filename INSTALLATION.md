@@ -80,10 +80,14 @@ then Clone the latest project repo.
 
 ```sh
 cd /var/www/
-wget https://releases.wikimedia.org/mediawiki/1.39/mediawiki-1.39.13.tar.gz
-tar -xvzf mediawiki-1.39.13.tar.gz
-mv mediawiki-1.39.13 mediawiki
+
+wget https://releases.wikimedia.org/mediawiki/1.44/mediawiki-1.44.0.tar.gz
+tar -xvzf mediawiki-1.44.0.tar.gz
+mv mediawiki-1.44.0 mediawiki
+
+
 chown -R www-data:www-data mediawiki
+
 cd mediawiki
 sudo composer install --no-dev
 ```
@@ -93,6 +97,12 @@ sudo composer install --no-dev
 Click to complete installation link then download LocaleSettings.php paste it to your /var/www/mediawiki/ root folder.
 
 You may got permission error for your user.
+
+## Displaying loaded extensions and plugins:
+
+```
+👉 http://mediawiki.local/index.php/Special:Version
+```
 
 ## Fixing permission errors:
 
