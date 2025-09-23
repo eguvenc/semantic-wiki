@@ -213,7 +213,6 @@ php extensions/CirrusSearch/maintenance/ForceSearchIndex.php --skipLinks --index
 php extensions/CirrusSearch/maintenance/ForceSearchIndex.php --skipParse
 ```
 
-
 ### 7. **Test**
 
 * On the home page, check if you can add a new item (Q1, Q2, etc.) using **Special\:NewItem**.
