@@ -67,7 +67,7 @@ sudo mv apache-maven-3.9.9 /opt/maven
 ### 3. Ortam değişkenlerini ayarla
 
 ```bash
-sudo nano /etc/profile.d/maven.sh
+sudo vim /etc/profile.d/maven.sh
 ```
 
 İçine şunu ekle:
@@ -124,17 +124,10 @@ WDQS’yi sürekli güncel tutmak için iki parça gerekiyor:
 
 1. Updater (Consumer)
 
-MediaWiki’den gelen RDF değişikliklerini alır → Blazegraph’a yazar.
-
-Normalde runUpdate.sh ile çalışır.
+MediaWiki’den gelen RDF değişikliklerini alır → Blazegraph’a yazar. Normalde runUpdate.sh ile çalışır.
 
 Kaynağı ya:
-
-MediaWiki job queue (HTTP polling),
-
-ya da Kafka stream (büyük kurulumlarda).
-
-Senin local kurulum için HTTP polling yeterli.
+MediaWiki job queue (HTTP polling), ya da Kafka stream (büyük kurulumlarda). Basit kurulum için MediaWiki job queue (HTTP polling) yeterli olur.
 
 
 ### 3. Derleme
@@ -147,47 +140,103 @@ mvn clean package -DskipTests -pl tools -am
 Bittiğinde şunlar oluşmalı:
 
 ```
-wdqs-updater/target/query-service-*-SNAPSHOT.jar
-wdqs-updater/runUpdate.sh
+wdqs-updater/tools/target/query-service-*-SNAPSHOT.jar
+wdqs-updater/tools/runUpdate.sh
 ```
 
----
 
-### 4. Scripti Çalıştırılabilir Yap
+### Wdq Namespace inin Oluşturulması
+
+
+Blazegraph kurulduğunda otomatik olarak wdq namespace oluşturulmaz. Blazegraph, boş bir RDF triple store sunucusudur. Kurulum sırasında sadece Blazegraph servisi gelir, fakat WDQS’nin ihtiyaç duyduğu wdq namespace’i sizin oluşturmanız gerekir.
+wdq namespace’i, Wikidata Query Service (WDQS) Updater’ın verileri yazacağı özel bir namespace’tir. Bu namespace’in içinde SPARQL endpoint ve diğer ayarlar (RDF store özellikleri) yer alır.
+
+Kısaca: Blazegraph sadece motoru sağlar, WDQS Updater için gerekli namespace’i manuel veya script ile oluşturmanız gerekir.
+
 
 ```bash
-chmod +x runUpdate.sh
+sudo vim /opt/wdqs-updater/RWStore.properties
 ```
 
----
 
-### 5. Çalıştırma (HTTP Polling)
+* Paste below the items
+
 
 ```bash
-./runUpdate.sh \
-  -h http://localhost:9999/bigdata/namespace/wdq/sparql \
-  -s http://mediawiki.local/api.php \
-  -d /var/lib/wdqs/dump.ttl.gz \
-  -P 10
+com.bigdata.rdf.sail.truthMaintenance=false
+com.bigdata.rdf.store.AbstractTripleStore.textIndex=false
+com.bigdata.rdf.store.AbstractTripleStore.justify=false
+com.bigdata.rdf.store.AbstractTripleStore.statementIdentifiers=false
+com.bigdata.rdf.store.AbstractTripleStore.axiomsClass=com.bigdata.rdf.axioms.NoAxioms
+com.bigdata.namespace.wdq.spo.com.bigdata.btree.BTree.branchingFactor=1024
+com.bigdata.rdf.sail.namespace=wdq
+com.bigdata.rdf.store.AbstractTripleStore.quads=true
+com.bigdata.rdf.store.AbstractTripleStore.geoSpatial=false
+com.bigdata.namespace.wdq.lex.com.bigdata.btree.BTree.branchingFactor=400
+com.bigdata.journal.Journal.groupCommit=false
+com.bigdata.rdf.sail.isolatableIndices=true
 ```
 
--h → Blazegraph SPARQL endpoint
--s → MediaWiki API endpoint
--d → RDF dump dosyası (başlangıç yüklemesi için)
--P → kaç thread çalışacak (10 iyi başlangıç)
 
-Bunu bir systemd servisi yaparsan sürekli çalışır ve yeni değişiklikleri alır.
+Triples / Quads: quads seçili (RDF + SPARQL seçtiğin için otomatik quads modunda olur)
+Inference: İstediğin inference yoksa boş bırakabilirsin
+Isolatable indices: İşaretle ✅ (güvenli ve WDQS önerisi)
+Full text index: İstersen devre dışı bırakabilirsin ❌ (WDQS için gerekli değil)
+Enable geospatial: Eğer coğrafi sorgu yapmayacaksan ❌ bırak
 
+
+* Use / Apply:
+Namespace oluşturduktan sonra Use butonuna basmayı unutma, yoksa aktif olmayacaktır.
+
+
+* Kaydet ve çık.
+* Wdq namespace i yaratalım.
+
+```bash
+curl -X POST   -H "Content-Type:text/plain"   --data-binary @/opt/wdqs-updater/RWStore.properties   "http://localhost:9999/bigdata/namespace"
+````
+
+* Beklenen yanıt.
+
+CREATED.
+
+
+Arayüzden 
+
+```
+http://localhost:9999/bigdata/#namespaces
+```
+
+namespace ler içinde wdq gözükmeli. Use seçeneğine tıklayarak "wdq" namespace ini aktif et.`
+
+<img title="In Use" alt="Acticating In Use" src="/images/blazegraph-in-use.png">
 
 ---
 
 ### 4. Blazegraph’a İlk Veriyi Yükle
+
+
+Eğer Q1 ekli değilse bir tane örnek "query 1" yaratalım.
+
+```bash
+http://mediawiki.local/index.php/Special:NewItem
+```
+
+Label kısmına Q1 yazın ve kaydedin. Açıklamaya test yazabilirsiniz.
 
 MediaWiki’den dump al:
 
 ```bash
 php /var/www/mediawiki/extensions/Wikibase/repo/maintenance/dumpRdf.php --format=ttl > dump.ttl
 ```
+
+Blazegraph’a yükle:
+
+curl -X POST \
+  -H 'Content-Type:text/turtle' \
+  --data-binary @dump.ttl \
+  http://localhost:9999/bigdata/namespace/kb/sparql
+
 
 Blazegraph’a yükle:
 
@@ -198,19 +247,86 @@ curl -X POST \
   http://localhost:9999/bigdata/namespace/kb/sparql
 ```
 
+
+Test edelim:
+
+
+```sql
+PREFIX wd: <http://mediawiki.local/entity/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?item ?label
+WHERE {
+  ?item a <http://wikiba.se/ontology#Item> ;
+        rdfs:label ?label .
+}
+LIMIT 10
+```
+
+
+Beklenen Çıktı:
+
+<table>
+  <tr>
+    <th>item</th>
+    <th>label</th>
+  </tr>
+
+  <tr>
+    <td><http://mediawiki.local/entity/Q1></td>
+    <td>test</td>
+  </tr>
+
+  <tr>
+    <td><http://mediawiki.local/entity/Q2></td>
+    <td>Q1</td>
+  </tr>
+</table>
+
+
 ---
 
-### 5. Updater Servisini Çalıştır
+### 5. Updater Servisini Çalıştır (HTTP Polling)
+
+
+Update path for direct executtion.
+
+
+```bash
+vim /opt/wdqs-updater/tools/runUpdate.sh
+```
+
+Change path
+
+
+```bash
+java -cp target/wikidata-query-tools-*-SNAPSHOT-jar-with-dependencies.jar ...
+```
+
+to
+
+```bash
+java -cp /opt/wdqs-updater/tools/target/wikidata-query-tools-*-SNAPSHOT-jar-with-dependencies.jar ...
+```
 
 `runUpdate.sh` ile çalışır:
 
 ```bash
-./runUpdate.sh \
-  -h http://localhost:9999/bigdata/namespace/wdq/sparql \
-  -s http://mediawiki.local/api.php \
-  -d /var/lib/wdqs/dump.ttl.gz \
-  -P 10
+sh /opt/wdqs-updater/tools/runUpdate.sh \
+  --sparqlUrl http://localhost:9999/bigdata/namespace/wdq/sparql \
+  --wikibaseHost mediawiki.local \
+  --dumpDir /opt/wdqs-updater/ \
+  --threadCount 10 \
+  --pollDelay 10
 ```
+
+-h → Blazegraph SPARQL endpoint
+-s → MediaWiki API endpoint
+-d → RDF dump dosyası (başlangıç yüklemesi için)
+-P → kaç thread çalışacak (10 iyi başlangıç)
+
+Bunu bir systemd servisi yaparsan sürekli çalışır ve yeni değişiklikleri alır.
+
 
 ### 6. Systemd Servisi Olarak Kur
 
@@ -218,18 +334,21 @@ curl -X POST \
 
 ```ini
 [Unit]
-Description=Wikidata Query Service Updater
-After=network.target blazegraph.service
+Description=WDQS Updater Service
+After=network.target
 
 [Service]
 Type=simple
-User=www-data
-WorkingDirectory=/opt/wdqs
-ExecStart=/opt/wdqs/runUpdate.sh -h http://localhost:9999/bigdata/namespace/wdq/sparql \
-          -s http://mediawiki.local/api.php \
-          -d /var/lib/wdqs/dump.ttl.gz \
-          -P 10
+User=root
+WorkingDirectory=/opt/wdqs-updater/tools
+ExecStart=/bin/bash /opt/wdqs-updater/tools/runUpdate.sh \
+  --sparqlUrl http://localhost:9999/bigdata/namespace/wdq/sparql \
+  --wikibaseHost mediawiki.local \
+  --dumpDir /opt/wdqs-updater/ \
+  --threadCount 10 \
+  --pollDelay 10
 Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
