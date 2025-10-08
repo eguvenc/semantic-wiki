@@ -10,7 +10,6 @@ sudo apt install -y apache2 mariadb-server php libapache2-mod-php php-mysql \
 
 Create a new database for your new Wiki project.
 
-
 ```sql
 CREATE DATABASE wikidb;
 FLUSH PRIVILEGES;
