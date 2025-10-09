@@ -3,7 +3,7 @@
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y apache2 mariadb-server php libapache2-mod-php php-mysql \
+sudo apt install -y apache2 php libapache2-mod-php php-mysql \
   php-intl php-mbstring php-xml php-apcu php-curl php-zip unzip git composer curl \
   openjdk-17-jdk
 ```
@@ -33,9 +33,26 @@ vim mediawiki.conf
 
     # apache mod headers must be enabled with this command
     # sudo a2enmod headers
-	<Directory /var/www/mediawiki/images>
-	    Header set X-Content-Type-Options "nosniff"
-	</Directory>
+  	
+    <Directory /var/www/mediawiki/images>
+
+        # .htaccess dosyalarını göz ardı et
+        AllowOverride None
+
+        # PHP motorunu kapat
+        php_admin_flag engine off
+
+        # HTML / PHP gibi dosyaları düz metin olarak sun
+        AddType text/plain .php .phtml .php3 .php4 .php5 .php7 .html .htm .shtml
+
+        # PHP dosyalar için handler’ı kaldır
+        <FilesMatch "\.ph(p[3-7]?|tml)$">
+           SetHandler None
+        </FilesMatch>
+
+        # Tarayıcıların dosya tipini tahmin etmesini engelle
+        Header set X-Content-Type-Options "nosniff"
+    </Directory>
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -48,7 +65,7 @@ Enable mediawiki website.
 a2ensite mediawiki.conf 
 sudo a2enmod headers
 sudo a2enmod rewrite
-service restaert apache2
+service apache2 restart
 ```
 
 Add mediawiki.local as localhost.
@@ -57,7 +74,6 @@ Add mediawiki.local as localhost.
 vim /etc/hosts
 
 127.0.0.1 localhost
-127.0.1.1 ersin
 127.0.0.1 mediawiki.local
 ```
 
@@ -84,7 +100,6 @@ wget https://releases.wikimedia.org/mediawiki/1.44/mediawiki-1.44.0.tar.gz
 tar -xvzf mediawiki-1.44.0.tar.gz
 mv mediawiki-1.44.0 mediawiki
 
-
 chown -R www-data:www-data mediawiki
 
 cd mediawiki
@@ -95,7 +110,10 @@ sudo composer install --no-dev
 
 Click to complete installation link then download LocaleSettings.php paste it to your /var/www/mediawiki/ root folder.
 
-You may got permission error for your user.
+
+## LocalSettings.php
+
+You will need to download it and put LocalSettings.php file in the base of your wiki installation (the same directory as index.php). 
 
 ## Displaying loaded extensions and plugins:
 
@@ -104,6 +122,8 @@ You may got permission error for your user.
 ```
 
 ## Fixing permission errors:
+
+You may got permission error for your user.
 
 1. Install ACL for Ubuntu
 
@@ -131,6 +151,7 @@ sudo setfacl -R -d -m u:www-data:rwx /var/www/mediawiki
 ```
 
 So, it can always write to both `ersin` and `www-data` folders.
+
 
 ## Installing a Default Skin
 

@@ -43,7 +43,7 @@ Then, assuming composer is available as a binary:
 composer install --no-dev
 ```
 
-3. Update LocalSettings.php
+4. Update LocalSettings.php
 
 ```php
 # -----------------------
@@ -73,7 +73,7 @@ $wgWBClientSettings['changesDatabase'] = "wikidb";
 # -----------------------
 ```
 
-4. **Run maintenance scripts**
+5. **Run maintenance scripts**
 
 ```bash
 php maintenance/run.php update
@@ -98,7 +98,7 @@ git clone -b REL1_44 https://gerrit.wikimedia.org/r/mediawiki/extensions/CirrusS
 git clone -b REL1_44 https://gerrit.wikimedia.org/r/mediawiki/extensions/Elastica.git
 ```
 
-**Install Elasticsearch**
+6. **Install Elasticsearch**
 
 Elasticsearch is required for Wikibase's search/query engine:
 
@@ -120,12 +120,73 @@ sudo systemctl enable --now elasticsearch
 sudo apt install elasticsearch
 ```
 
+7. **Run Elasticsearch on a Different Port (Prevent port Collision on your local Machine)**
+
+Elasticsearch works on 9200 as a default. Open Elasticsearch (elasticsearch.yml) to change it:
+
+vim /etc/elasticsearch/elasticsearch.yml
+
+```bash
+# /etc/elasticsearch/elasticsearch.yml
+network.host: 0.0.0.0  # or just localhost
+http.port: 9300         # desired port, e.g., 9300
+```
+
+```bash
+sudo systemctl restart elasticsearch
+
+# Or if using Docker:
+docker run -p 9300:9300 docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+```
+
+> Note: If you are working with Docker, you must also set the container port mapping correctly: -p hostPort:containerPort.
+
+
+8. **Update Wikibase Elasticsearch Settings**
+
+If Wikibase uses Elasticsearch, you need to configure it in LocalSettings.php or in the Wikibase Search extension configuration.
+
+```php
+wfLoadExtension( 'WikibaseSearch' );
+
+$wgWBRepoSettings['search'] = [
+    'backend' => 'ElasticsearchBackend',
+    'elasticsearchHost' => '127.0.0.1',  // Elasticsearch server
+    'elasticsearchPort' => 9300,         // New port
+    'indexPrefix' => 'wikibase',
+];
+```
+
+Adjust elasticsearchHost and elasticsearchPort according to your setup. If using Docker Compose, make sure the port is correctly mapped in your docker-compose.yml.
+
 After installation, launch:
 
 ```bash
 sudo systemctl enable elasticsearch
 sudo systemctl start elasticsearch
 ```
+
+9. **Testing Elasticsearch**
+
+* Check that Elasticsearch is running on the new port:
+
+```bash
+curl http://localhost:9300
+```
+
+* Rebuild the Wikibase search index:
+
+```bash
+php maintenance/rebuildElasticIndex.php
+```
+
+* Test searches in the browser or via API.
+
+---
+
+💡 **Tip:**
+Wikibase and Elasticsearch are often run together with **Docker Compose**. In that case, it’s easier to manage port and environment settings directly in the `docker-compose.yml`.
+
 
 ### 1. Go to the MediaWiki root directory
 
@@ -167,7 +228,7 @@ composer install --no-dev
 > CirrusSearch REL1\_44 dalı şu an `ruflin/elastica` 7.x sürümünü kullanıyor.
 
 
-### 4.  **Add to LocalSettings.php**
+### 4. **Add to LocalSettings.php**
 
 ```php
 # -----------------------

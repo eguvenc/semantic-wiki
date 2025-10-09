@@ -1,6 +1,11 @@
 
 ## Installing Semantic MediaWiki Extension
 
+* **SMW** → Focuses on generating meaningful content with semantic data, tables, and forms within MediaWiki.
+* **Wikibase** → Provides a central database for structured data (publishing Wikidata).
+
+👉 It is technically possible to use both together, but generally **either SMW or Wikibase** is preferred. Because they can logically conflict.
+
 ```sh
 cd /var/www/mediawiki
 composer require mediawiki/semantic-media-wiki "^6.0"

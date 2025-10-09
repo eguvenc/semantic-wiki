@@ -42,6 +42,10 @@ flush privileges;
 
 ### mysqld.conf for LOCAL
 
+```bash
+vim /etc/mysql/mysql.conf.d/mysqld.cnf 
+```
+
 ```sh
 bind-address            = 0.0.0.0
 mysqlx-bind-address     = 127.0.0.1
@@ -102,14 +106,19 @@ SELECT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') FROM mysql.user;
 
 ### MYSQL Server 8 Remote Access Configruation
 
-/etc/mysql/mysql.conf.d/mysqld.cnf   dosyasına
 
+```bash
+vim /etc/mysql/mysql.conf.d/mysqld.cnf 
+```
+
+```
 bind_address = 0.0.0.0
 mysqlx-bind-address = 127.0.0.1
 
 character-set-server = utf8
 init-connect='SET NAMES utf8'
 collation-server=utf8_general_ci
+```
 
 ### For Production
 

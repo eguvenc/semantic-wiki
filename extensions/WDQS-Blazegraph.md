@@ -198,8 +198,6 @@ wd:Q1 a wikibase:Item ;
 ✅ `Cradle config.json` için:
 
 
-
-
 ---
 
 👉 Şimdi sana bir soru: Sen bu sistemi **tek sunucuda (hepsi bir arada)** mı kurmak istiyorsun, yoksa **MediaWiki ayrı, WDQS ayrı sunucu** şeklinde mi planlıyorsun? Ona göre sana `systemd service` dosyaları da yazabilirim.
