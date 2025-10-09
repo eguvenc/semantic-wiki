@@ -54,7 +54,11 @@ $wgCirrusSearchClusters = [
 # Additional Settings
 $wgSearchType = 'CirrusSearch';
 $wgCirrusSearchWikimediaExtraPlugin = true;
-
+$wgCirrusSearchWikibaseIndexEntityData = true;
+$wgCirrusSearchWikibaseEntityTypes = [
+    'item' => true,
+    'property' => true
+];
 # -----------------------
 # Default Lang
 # -----------------------
@@ -91,6 +95,7 @@ $wgLanguageCode = "en";
 // // (Optional) include descriptions and aliases in searches
 // $wgCirrusSearchWikibaseSearchEntityDescriptions = true;
 // $wgCirrusSearchWikibaseSearchEntityAliases = true;
+// $wgCirrusSearchIndexBaseName = 'confident';
 
 //
 //
@@ -278,6 +283,8 @@ php extensions/CirrusSearch/maintenance/ForceSearchIndex.php --skipParse
 > ```
 
 
+💡 Tip: If you want to see all Wikibase entities and pages in Elasticsearch, you can consider updating the index with a periodic rebuild or cron job.
+
 💡 Note: MediaWiki 1.44 + CirrusSearch is generally compatible with Elasticsearch 7.10.x or 8.9.x.
 7.10.2 has been the stable version used in Wikibase packages for a long time.
 
@@ -315,10 +322,10 @@ curl -X GET "http://127.0.0.1:9200/_cat/indices?v"
 Example output:
 
 ```
-health status index                             uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-green  open   wikibase_wikibase_entity_first    RncbFG3_Rua5rPVrUgKwYg   1   0        250            0    1.2mb        1.2mb
-green  open   wikibase_content_first            eXoL2Jc2T7-0hGvFJLLh-w   1   0        220            0    2.4mb        2.4mb
-green  open   wikibase_general_first            1G7W7NhcTHuZWvMQxGq4gA   1   0         25            0  500.0kb      500.0kb
+health status index                     uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   mw_cirrus_metastore_first BvXNu1ElQdyMBRWFBVhEKg   1   0         28            2     85.5kb         85.5kb
+green  open   wikidb_general_first      cT0dQwTAS6OMcceekC1kLw   1   0          0            0       208b           208b
+green  open   wikidb_content_first      n-NcXbYDSnCwY28oYUOu0g   1   0          2            1     48.3kb         48.3kb
 ```
 
 ---
@@ -328,7 +335,54 @@ green  open   wikibase_general_first            1G7W7NhcTHuZWvMQxGq4gA   1   0  
 Search for a Wikibase item label:
 
 ```bash
-curl -X GET "http://127.0.0.1:9200/wikibase_wikibase_entity_first/_search?q=Berlin&pretty"
+curl -X GET "http://127.0.0.1:9200/wikidb_content_first/_search?q=Test&pretty"
+
+# {
+#   "took" : 7,
+#   "timed_out" : false,
+#   "_shards" : {
+#     "total" : 1,
+#     "successful" : 1,
+#     "skipped" : 0,
+#     "failed" : 0
+#   },
+#   "hits" : {
+#     "total" : {
+#       "value" : 1,
+#       "relation" : "eq"
+#     },
+#     "max_score" : 0.7768086,
+#     "hits" : [
+#       {
+#         "_index" : "wikidb_content_first",
+#         "_type" : "_doc",
+#         "_id" : "2",
+#         "_score" : 0.7768086,
+#         "_source" : {
+#           "version" : 2,
+#           "wiki" : "wikidb",
+#           "page_id" : 2,
+#           "namespace" : 120,
+#           "namespace_text" : "Item",
+#           "title" : "Q1",
+#           "timestamp" : "2025-10-09T18:48:19Z",
+#           "create_timestamp" : "2025-10-09T18:48:19Z",
+#           "category" : [ ],
+#           "external_link" : [ ],
+#           "outgoing_link" : [ ],
+#           "template" : [ ],
+#           "text" : "Test\ntest",
+#           "source_text" : "Test\ntest",
+#           "text_bytes" : 276,
+#           "content_model" : "wikibase-item",
+#           "display_title" : null,
+#           "redirect" : [ ],
+#           "incoming_links" : 0
+#         }
+#       }
+#     ]
+#   }
+# }
 ```
 
 This returns JSON results for all `item` and `property` entities containing "Berlin".
@@ -347,7 +401,7 @@ Results will now include **both wiki pages and item/property entities**.
 If multiple MediaWiki installations share the same Elasticsearch, avoid conflicts by adding a prefix:
 
 ```php
-$wgCirrusSearchIndexBaseName = 'tibconfident';
+$wgCirrusSearchIndexBaseName = 'confident';
 ```
 
 Resulting Elasticsearch indexes:
@@ -357,6 +411,17 @@ tibconfident_content_first
 tibconfident_general_first
 tibconfident_wikibase_entity_first
 ```
+
+
+## Deleting All Indices
+
+```bash
+curl -X DELETE "http://127.0.0.1:9200/confident_*"
+```
+
+💡 Tip:
+
+If you want to see all Wikibase entities and pages in Elasticsearch, you can consider updating the index with a periodic rebuild or cron job.
 
 ---
 
