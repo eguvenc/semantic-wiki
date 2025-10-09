@@ -123,8 +123,6 @@ You will need to download it and put LocalSettings.php file in the base of your 
 
 ## Fixing permission errors:
 
-You may got permission error for your user.
-
 1. Install ACL for Ubuntu
 
 ```bash

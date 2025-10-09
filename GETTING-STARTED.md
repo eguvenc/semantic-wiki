@@ -36,24 +36,27 @@ Wikibase is built on MediaWiki, so first we need to install MediaWiki.
 The main packages for Wikibase:
 
 * **Wikibase Repository:** Core functionality
-* **Wikibase Client:** For sharing data with other Wikibases
+* **Wikibase Search:** ElasticSearch and CirrusSearch
+* **Wikibase Client:** For sharing data with other Wikibases  (Optional)
 * **WDQS / Blazegraph:** Querying and SPARQL support
 
 ### 3.1 Wikibase Repository
 
-1. extensions/Wikibase.md
+  * [extensions/Wikibase.md](extensions/Wikibase.md)
 
-### 3.2 Wikibase Client (This extension needed for connect with other providers)
+### 3.2 Wikibase Elastic Search (Search Extension)
 
-1. extensions/Wikibase-Client.md
+  * [extensions/Wikibase-ElasticSearchAndCirrusSearch.md](extensions/Wikibase-ElasticSearchAndCirrusSearch.md)
 
-### 3.3 WDQS / Blazegraph
+### 3.3 Wikibase Client (This extension needed for connect with other providers)
 
-Blazegraph powers the SPARQL endpoint:
+  * [extensions/Wikibase-Client.md](extensions/Wikibase-Client.md)
 
-1. extensions/WDQS-Blazegraph.md
+### 3.4 WDQS / Blazegraph (Blazegraph powers the SPARQL endpoint)
 
-* Use Apache/Nginx reverse proxy to make Blazegraph accessible at `/wdqs`.
+  * [extensions/WDQS-Blazegraph.md](extensions/WDQS-Blazegraph.md)
+
+- Use Apache/Nginx reverse proxy to make Blazegraph accessible at `/wdqs`.
 
 ---
 
@@ -61,7 +64,7 @@ Blazegraph powers the SPARQL endpoint:
 
 If you want a visual interface for SPARQL queries:
 
-1. extension/WDQS-UD.md
+  * extension/WDQS-UD.md
 
 * Serve the build files via Apache.
 
