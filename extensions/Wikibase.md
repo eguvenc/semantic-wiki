@@ -125,7 +125,7 @@ $wgDBtype = "mysql";
 $wgDBserver = "localhost:3308";
 $wgDBname = "wikidb";
 $wgDBuser = "admin";
-$wgDBpassword = "Mbry8992@";
+$wgDBpassword = "12345678";
 ```
 
 5. **Run maintenance scripts**

@@ -26,16 +26,16 @@ SET PERSIST sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 ### For local development
  
 ```sh
-CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Mbry8992@';
+CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '12345678';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 flush privileges;
 
-CREATE USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Mbry8992@';
+CREATE USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY '12345678';
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost' WITH GRANT OPTION;
 flush privileges;
 
 // mysql client ip adresi bağlanmaya çalışınca uyarı veren ip
-CREATE USER 'admin'@'192.168.75.1' IDENTIFIED WITH mysql_native_password BY 'Mbry8992@';
+CREATE USER 'admin'@'192.168.75.1' IDENTIFIED WITH mysql_native_password BY '12345678';
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'192.168.75.1' WITH GRANT OPTION;
 flush privileges;
 ```
@@ -62,7 +62,7 @@ key_buffer_size         = 16M
 ### For prod server
 
 ```sh
-CREATE USER 'admin'@'46.2.244.250' IDENTIFIED WITH mysql_native_password BY 'Mbry8992@';
+CREATE USER 'admin'@'46.2.244.250' IDENTIFIED WITH mysql_native_password BY '12345678';
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'46.2.244.250' WITH GRANT OPTION;
 flush privileges;
 ```

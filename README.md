@@ -1,6 +1,7 @@
 
 # Semantic Wikibase Installation Steps
 
+* GETTING_STARTED.md
 * MYSQL.md
 * PHP-APACHE2.md
 * INSTALLATION.md
