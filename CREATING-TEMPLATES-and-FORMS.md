@@ -1,25 +1,25 @@
 
 ## Template:Film
 
-MediaWiki’de `Template:Film` sayfasını oluşturmak için şu adımları izle:
+To create the `Template:Film` page in MediaWiki, follow these steps:
 
 ---
 
-## Adım 1: Tarayıcıda Template Sayfasına Git
+## Step 1: Go to the Template Page in Your Browser
 
-Adres çubuğuna aşağıdakini yaz:
+Enter the following in your browser’s address bar:
 
 ```
 http://mediawiki.local/index.php?title=Template:Film&action=edit
 ```
 
-> Burada `mediawiki.local` senin MediaWiki kurulumunun domaini veya localhost olabilir.
+> Here, `mediawiki.local` should be replaced with your MediaWiki domain or `localhost`.
 
 ---
 
-## Adım 2: İçeriği Yapıştır
+## Step 2: Paste the Content
 
-Açılan editör sayfasına daha önce verdiğim `Template:Film` içeriğini yapıştır:
+Paste the following content into the editor page:
 
 ```wiki
 '''Title''': {{{Title|}}}
@@ -37,27 +37,26 @@ Açılan editör sayfasına daha önce verdiğim `Template:Film` içeriğini yap
 
 ---
 
-## Adım 3: Sayfayı Kaydet
+## Step 3: Save the Page
 
-Açıklama kısmına “Create Film template” gibi bir not yazabilir ve “Sayfayı Kaydet” butonuna tıkla.
-
----
-
-## Böylece:
-
-* `Template:Film` oluşturulmuş olur.
-* Page Forms, oluşturduğun formda bu şablonu kullanır.
+Add a summary like “Create Film template” and click the “Save page” button.
 
 ---
 
+## This Will:
+
+* Create the `Template:Film` page.
+* Allow Page Forms to use this template in your forms.
+
+---
 
 ## Form:Film
 
 ---
 
-## Adım 1: Form Sayfasına Git
+## Step 1: Go to the Form Page
 
-Tarayıcı adres çubuğuna yaz:
+Enter this in your browser’s address bar:
 
 ```
 http://mediawiki.local/index.php?title=Form:Film&action=edit
@@ -65,9 +64,9 @@ http://mediawiki.local/index.php?title=Form:Film&action=edit
 
 ---
 
-## Adım 2: İçeriği Yapıştır
+## Step 2: Paste the Content
 
-Aşağıdaki kodu yapıştır:
+Paste the following code:
 
 ```wiki
 {{{for template|Film}}}
@@ -85,22 +84,26 @@ Genre: {{{field|Genre|input type=dropdown|values=Drama,Comedy,Action,Sci-Fi,Anim
 
 ---
 
-## Adım 3: Sayfayı Kaydet
+## Step 3: Save the Page
 
-Açıklama kısmına “Create Film form” yazıp “Sayfayı Kaydet” butonuna tıkla.
+Add a summary like “Create Film form” and click “Save page.”
 
 ---
 
-## Adım 4: Test Et
+## Step 4: Test the Form
 
-Şimdi yeni film sayfası oluşturmak için şuraya git:
+Now, to create a new film page, go to:
 
 ```
 http://mediawiki.local/index.php?title=Film:Inception&action=formedit
 ```
 
-Burada form açılacak, bilgileri doldurup sayfayı oluşturabilirsin.
+The form will open, allowing you to fill in the information and create the page.
 
 ---
 
-İstersen sonraki adımda **sayfaları listeleyen sorgu sayfası** veya diğer gelişmiş PageForms özelliklerine geçebiliriz. Yardımcı olayım mı?
+If you want, we can move on to the **query pages that list pages** or other advanced PageForms features next.
+
+---
+
+I can also translate that next part about queries and advanced PageForms if you want. Do you want me to?
