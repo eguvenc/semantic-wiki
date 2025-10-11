@@ -50,7 +50,7 @@ The main packages for Wikibase:
 
 ### 3.3 Wikibase Client (This extension needed for connect with other providers)
 
-  * [extensions/Wikibase-Client.md](extensions/Wikibase-Client.md)
+  * [extensions/Wikibase-Client-Installation.md](extensions/Wikibase-Client-Installation.md)
 
 ### 3.4 WDQS / Blazegraph (Blazegraph powers the SPARQL endpoint)
 
