@@ -27,7 +27,7 @@ cd /var/www/mediawiki/extensions
 cd /var/www/mediawiki/extensions
 git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/Wikibase
 cd Wikibase
-git checkout REL1_44
+git checkout REL1_39
 git submodule update --init --recursive
 composer install --no-dev
 ```
@@ -35,6 +35,51 @@ composer install --no-dev
 3. Run Composer to Install Dependencies
 
 Then, from the root of your MediaWiki installation, run:
+
+If you don't have this file, copy the example:
+
+```bash
+cp composer.local.json-sample composer.local.json
+```
+
+It should look something like this:
+
+```json
+{
+  "extra": {
+    "merge-plugin": {
+      "include": [
+        "extensions/*/composer.json"
+      ]
+    }
+  }
+}
+```
+
+Test:
+
+```bash
+curl -X GET http://127.0.0.1:9200
+
+Expected Output:
+
+```json
+{
+  "name" : "your-node-name",
+  "cluster_name" : "elasticsearch",
+  "version" : {
+    "number" : "7.10.2"
+  }
+}
+```
+
+Update mediawiki.
+
+```bash
+php maintenance/update.php
+```
+
+Install depdencies.
 
 ```bash
 cd mediawiki/
@@ -86,10 +131,15 @@ $wgDBpassword = "Mbry8992@";
 5. **Run maintenance scripts**
 
 ```bash
-php maintenance/run.php update
-php maintenance/run.php ./extensions/Wikibase/lib/maintenance/populateSitesTable.php
-php maintenance/run.php ./extensions/Wikibase/repo/maintenance/rebuildItemsPerSite.php
-php maintenance/run.php populateInterwiki
+# 1) MediaWiki DB şemasını güncelle
+# 2) Wikibase sites tablosunu doldur
+# 3) wb_items_per_site gibi tabloları yeniden oluştur
+# 4) interwiki tablosunu doldur (opsiyonel: --source ve --force parametreleri var)
+# 
+php maintenance/update.php
+php extensions/Wikibase/lib/maintenance/populateSitesTable.php  
+php extensions/Wikibase/repo/maintenance/rebuildItemsPerSite.php
+php maintenance/populateInterwiki.php --source="https://en.wikipedia.org/w/api.php" --force
 ```
 
 ### 7. **Testing Wikibase Using UI**

@@ -96,9 +96,9 @@ then Clone the latest project repo.
 ```sh
 cd /var/www/
 
-wget https://releases.wikimedia.org/mediawiki/1.44/mediawiki-1.44.0.tar.gz
-tar -xvzf mediawiki-1.44.0.tar.gz
-mv mediawiki-1.44.0 mediawiki
+wget https://releases.wikimedia.org/mediawiki/1.39/mediawiki-1.39.9.tar.gz
+tar -xvzf mediawiki-1.39.9.tar.gz
+mv mediawiki-1.39.9 mediawiki
 
 chown -R www-data:www-data mediawiki
 
@@ -106,7 +106,7 @@ cd mediawiki
 sudo composer install --no-dev
 ```
 
-## Visit http://mediawiki.local/
+## Visit http://mediawiki.local:90/
 
 Click to complete installation link then download LocaleSettings.php paste it to your /var/www/mediawiki/ root folder.
 
@@ -120,6 +120,7 @@ You will need to download it and put LocalSettings.php file in the base of your 
 ```
 👉 http://mediawiki.local/index.php/Special:Version
 ```
+
 
 ## Fixing permission errors:
 
@@ -149,29 +150,3 @@ sudo setfacl -R -d -m u:www-data:rwx /var/www/mediawiki
 ```
 
 So, it can always write to both `ersin` and `www-data` folders.
-
-
-## Installing a Default Skin
-
-Clone a skin
-
-
-```
-cd /var/www/mediawiki/skins
-git clone https://gerrit.wikimedia.org/r/mediawiki/skins/Vector.git
-cd Vector
-git checkout REL1_41  // checkout mediawiki current version 
-```
-
-Enable skin in your LocalSettings.php:
-
-```php
-wfLoadSkin( 'Vector' );
-$wgDefaultSkin = 'vector';
-```
-
-Restart apache2
-
-```sh
-sudo systemctl restart apache2
-```

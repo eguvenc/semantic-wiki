@@ -31,8 +31,8 @@ Wikibase requires some dependent extensions, such as:
 cd /var/www/mediawiki/extensions
 
 rm -rf Elastica CirrusSearch
-git clone -b REL1_44 https://gerrit.wikimedia.org/r/mediawiki/extensions/Elastica  # 1. Elasticsearch client
-git clone -b REL1_44 https://gerrit.wikimedia.org/r/mediawiki/extensions/CirrusSearch   # 2. CirrusSearch (search engine)
+git clone -b REL1_39 https://gerrit.wikimedia.org/r/mediawiki/extensions/Elastica  # 1. Elasticsearch client
+git clone -b REL1_39 https://gerrit.wikimedia.org/r/mediawiki/extensions/CirrusSearch   # 2. CirrusSearch (search engine)
 ```
 
 ### 2. **Add to LocalSettings.php**
@@ -197,7 +197,7 @@ Wikibase and Elasticsearch are often run together with **Docker Compose**. In th
 cd /var/www/mediawiki
 ```
 
-### 2. Check composer.local.json
+### 2. Check composer.local.json Is Installed
 
 If you don't have this file, copy the example:
 
