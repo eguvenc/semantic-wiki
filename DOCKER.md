@@ -63,8 +63,35 @@ wikiprojects_testwiki-elasticsearch-1
 db74ab6d33cc   redis:alpine                                                                                     "docker-entrypoint.s…"    2 hours ago   Up 2 hours             6379/tcp   
 
 
+### Deleting All Containers
 
-### Listing files in docker containers
+```bash
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker volume prune
+docker network prune
+```
+
+* docker ps -aq → lists all container IDs.
+* docker volume prune -> Only deletes unused volumes
+* docker network prune -> Only deletes unused volume networks
+
+
+### Deleting Specific Container
+
+If you want to remove ***wikidemo*** project.
+
+```bash
+docker ps -a | grep wikidemo | awk '{print $1}' | xargs docker rm -f
+```
+
+## Cleaning containers, images, volumes and networks in the entire system
+
+```bash
+docker system prune -a --volumes
+```
+
+### Listing files in Docker Containers
 
 ```bash
 docker exec -it wikiprojects_testwiki-wikibase-1 bash

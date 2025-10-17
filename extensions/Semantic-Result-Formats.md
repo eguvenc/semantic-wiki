@@ -1,6 +1,9 @@
 
 ## Semantic Result Formats
 
+
+https://www.semantic-mediawiki.org/wiki/Extension:Semantic_Result_Formats/Installation
+
 Semantic Result Formats, SMW allows you to display query results with visuals such as tables, graphs, maps, timelines, etc.
 
 | Format                             | Açıklama                                                                   |
@@ -17,54 +20,151 @@ Semantic Result Formats, SMW allows you to display query results with visuals su
 | `treemap`, `piechart`, `bar chart` | Görsel istatistikler                                                       |
 | `eventline`, `eventcalendar`       | Zaman serileri ve etkinlik odaklı görseller                                |
 
+Here’s a **step-by-step installation guide** for **Semantic Result Formats (SRF)** designed specifically for your setup — **MediaWiki 1.39.15** with **Semantic MediaWiki (SMW) 4.2**.
 
-## Installation
-
-Ubuntu altında MediaWiki çalıştırıyorsan SRF’yi şu şekilde yükleyebilirsin:
-
-MediaWiki'nin extensions dizinine git:
+This guide follows the official documentation but is optimized for your MediaWiki version and typical Composer setup.
 
 
-```sh
-cd /var/www/mediawiki/
-composer require mediawiki/semantic-result-formats "^5.0"
+**For MediaWiki 1.39.15 + Semantic MediaWiki 4.2**
+
+---
+
+## 1. Prerequisites
+
+Before installing SRF, make sure the following requirements are met:
+
+* ✅ **MediaWiki 1.39.15** installed and working.
+* ✅ **Semantic MediaWiki (SMW) 4.2** already installed and enabled.
+* ✅ **Composer** is available (globally or as `composer.phar` in your MediaWiki root).
+* ✅ You have command-line access and write permissions for `vendor/`, `extensions/`, and `LocalSettings.php`.
+
+---
+
+## 2. Installation Steps
+
+Go to your MediaWiki installation directory 
+
+```bash
+cd /var/www/mediawiki
 ```
 
-LocalSettings.php dosyana ekle:
+Add SRF to your composer configuration  
+
+
+If you have a local Composer config file (recommended for MediaWiki setups):
+
+```bash
+COMPOSER=composer.local.json composer require --no-update mediawiki/semantic-result-formats "~4.2"
+```
+
+Install the dependency  
+
+```bash
+COMPOSER=composer.local.json composer update --no-dev
+```
+
+Enable the extension in MediaWiki
+
+Edit your `LocalSettings.php` and **add this line after SMW is loaded**:
 
 ```php
 wfLoadExtension( 'SemanticResultFormats' );
 ```
 
-Eğer özel formatlar gerekiyorsa ek modülleri yükle (örneğin Maps, Graphviz gibi).
+---
 
+## 3. Verify Installation
 
-## Example 
+After installation:
 
-Sorguyu tablo değil de grafik olarak görmek istersen:
+1. Visit **`Special:Version`** in your wiki.
+   You should see **Semantic Result Formats** listed under installed extensions.
+2. If SRF doesn’t appear, clear cache and run:
+
+   ```bash
+   php maintenance/update.php
+   ```
+
+---
+
+## 4. Optional Configuration
+
+By default, SRF activates a set of common result formats such as:
 
 ```
+calendar, eventcalendar, timeline, vcard, bibtex, outline, gallery,
+sum, average, min, max, median, tagcloud, tree, jqplotchart
+```
+
+You can manually specify which formats should be available using `$srfgFormats` in `LocalSettings.php`.
+
+### Example — Restrict formats:
+
+```php
+$srfgFormats = [ 'calendar', 'timeline', 'eventcalendar' ];
+```
+
+### Example — Add additional format:
+
+```php
+$srfgFormats[] = 'googlebar';
+```
+
+---
+
+## 5. Format Dependencies
+
+Some formats require additional MediaWiki extensions or libraries.
+Here are the most common dependencies:
+
+| Format                   | Requires                                                              |
+| ------------------------ | --------------------------------------------------------------------- |
+| `array`                  | [Arrays extension](https://www.mediawiki.org/wiki/Extension:Arrays)   |
+| `gantt`                  | [Mermaid extension](https://www.mediawiki.org/wiki/Extension:Mermaid) |
+| `graph`, `process`       | GraphViz installed on the server                                      |
+| `spreadsheet`            | [PHPSpreadsheet library](https://phpspreadsheet.readthedocs.io/)      |
+| `googlebar`, `googlepie` | Sends data to Google servers – consider privacy implications          |
+
+---
+
+## 6. Testing SRF
+
+You can test SRF by creating a page with the following content:
+
+```wikitext
 {{#ask:
- [[Category:Kişi]]
- | ?doğumTarihi
+ [[Category:Example]]
+ | ?Has date
+ | ?Has event
  | format=timeline
 }}
 ```
 
-Ya da:
+If the **timeline** appears, SRF is working correctly.
 
-```
-{{#ask:
- [[katıldığıOlaylar::Kurtuluş Savaşı]]
- | ?doğumYeri
- | format=map
-}}
-```
+---
 
-## Notlar:
+## 7. Troubleshooting
 
-SRF, MediaWiki + SMW sürüm uyumluluğu açısından hassastır. Kullandığın MediaWiki ve SMW sürümüne uygun SRF sürümünü çektiğinden emin ol.
+| Problem                           | Possible Fix                                                                        |
+| --------------------------------- | ----------------------------------------------------------------------------------- |
+| SRF not listed in Special:Version | Check `wfLoadExtension('SemanticResultFormats');` placement (must come *after* SMW) |
+| Composer dependency conflict      | Run `composer why mediawiki/semantic-result-formats` to check version mismatch      |
+| PHP error on load                 | Ensure your PHP version is ≥ 7.4 (recommended 8.0+)                                 |
+| Some formats missing              | Make sure `$srfgFormats` is not restricting available formats too much              |
 
-Google Maps API anahtarı gerektiren bazı harita özellikleri vardır. Ama OpenStreetMap ve Leaflet gibi açık kaynak çözümlerle API gerekmez.
+---
 
-İstersen birlikte örnek bir timeline, map, veya graph çıktısı oluşturabiliriz. Hangi formatı denemek istersin?
+## ✅ Summary
+
+| Component               | Version                                       |
+| ----------------------- | --------------------------------------------- |
+| MediaWiki               | **1.39.15**                                   |
+| Semantic MediaWiki      | **4.2**                                       |
+| Semantic Result Formats | **4.2**                                       |
+| Installation Method     | Composer (`composer.local.json` recommended)  |
+| Load Command            | `wfLoadExtension( 'SemanticResultFormats' );` |
+
+---
+
+Would you like me to extend this guide with **an example `composer.local.json`** file tailored for MediaWiki 1.39 + SMW + SRF (so you can copy-paste it directly)?

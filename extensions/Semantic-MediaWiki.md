@@ -7,8 +7,27 @@
 👉 It is technically possible to use both together, but generally **either SMW or Wikibase** is preferred. Because they can logically conflict.
 
 ```sh
+rm -rf vendor/
+rm composer.lock
+composer clear-cache
+
 cd /var/www/mediawiki
-composer require mediawiki/semantic-media-wiki "^6.0"
+rm -rf extensions/SemanticMediaWiki
+rm -rf vendor/mediawiki/semantic-media-wiki
+rm -rf vendor/mediawiki/semantic-result-formats
+composer clear-cache
+
+cd /var/www/mediawiki
+```
+
+https://www.semantic-mediawiki.org/wiki/Help:Installation/Quick_guide
+
+
+With this method, you continue to use global composer, but the installation is done via composer.local.json.
+
+```bash
+COMPOSER=composer.local.json composer require --no-update mediawiki/semantic-media-wiki:"~4.2"
+composer update
 ```
 
 Add the following lines to LocalSettings.php:
@@ -17,8 +36,8 @@ Add the following lines to LocalSettings.php:
 #
 # Semantic Wiki Extension
 #
-enableSemantics( 'mediawiki.local' ); // veya kendi domainin
 wfLoadExtension( 'SemanticMediaWiki' );
+enableSemantics( 'mediawiki.local' ); // veya kendi domainin
 
 ## enable SMW debug and warnings ..
 #
@@ -32,13 +51,27 @@ Start SMW database:
 ```sh
 cd /var/www/mediawiki
 php maintenance/update.php
+php extensions/SemanticMediaWiki/maintenance/setupStore.php
 ```
 
-## Check List
+## Installatipn Test
 
-Sure! Here's the English version of your message:
+🧪 **1. MediaWiki arayüzüne gir ve:**
 
----
+“Special:Version” sayfasını aç (örnek: https://localhost/wiki/Special:Version)  “Semantic MediaWiki” eklentisinin listede yer aldığını görmelisin.
+
+
+The following extensions are very useful after installation:
+
+PageForms
+— Semantic data entry with forms
+
+SemanticResultFormats
+— Query views such as lists, tables, and maps
+
+SemanticDrilldown
+— Filtering interface
+
 
 🧪 **1. Direct RDF Export Link for Testing**
 
@@ -65,16 +98,6 @@ Go to the **Special\:Version** page:
 ```
 👉 http://mediawiki.local/index.php/Special:Version
 ```
-
-On that page, you should see the **Semantic MediaWiki** extension and optionally **Semantic Result Formats**.
-
-If Semantic MediaWiki does not appear at all, run the following command:
-
-```bash
-composer require mediawiki/semantic-media-wiki "^6.0"
-```
-
----
 
 🧼 **3. Summary Checklist**
 

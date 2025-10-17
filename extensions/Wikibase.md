@@ -22,14 +22,11 @@ cd /var/www/mediawiki/extensions
 
 2. **Download Wikibase**
 
-
 ```bash
-cd /var/www/mediawiki/extensions
 git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/Wikibase
 cd Wikibase
 git checkout REL1_39
 git submodule update --init --recursive
-composer install --no-dev
 ```
 
 3. Run Composer to Install Dependencies
@@ -56,40 +53,21 @@ It should look something like this:
 }
 ```
 
-Test:
-
-```bash
-curl -X GET http://127.0.0.1:9200
-
-Expected Output:
-
-```json
-{
-  "name" : "your-node-name",
-  "cluster_name" : "elasticsearch",
-  "version" : {
-    "number" : "7.10.2"
-  }
-}
-```
-
-Update mediawiki.
-
-```bash
-php maintenance/update.php
-```
-
-Install depdencies.
+Update mediawiki & Install depdencies.
 
 ```bash
 cd mediawiki/
-rm composer.lock
-composer install --no-dev
+sudo -u www-data composer install --no-dev
+php maintenance/update.php
 ```
+
+***WARNING***: WikibaseClient does not need to be installed separately, it is already enabled below.
 
 4. Update LocalSettings.php
 
 ```php
+## 1.39 version
+
 # ------------------------------------------------------------------------------------------------------------
 # Wikibase Extension Start
 # ------------------------------------------------------------------------------------------------------------
@@ -117,6 +95,9 @@ $wgWBClientSettings['changesDatabase'] = "wikidb";
 # Wikibase Extension End
 # ------------------------------------------------------------------------------------------------------------
 ```
+
+https://www.mediawiki.org/wiki/Wikibase/Installation/Advanced_configuration
+
 
 ## Update Database settings if Mysql Port Different like Below
 

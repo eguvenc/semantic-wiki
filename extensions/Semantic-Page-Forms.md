@@ -24,7 +24,7 @@ PageForms compatible version: **5.x**
 ## Installing PageForms
 
 ```sh
-composer require mediawiki/page-forms
+composer require mediawiki/page-forms "~5.4"
 ```
 
 Then add the following line to your `LocalSettings.php`:

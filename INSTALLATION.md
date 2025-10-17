@@ -68,6 +68,8 @@ sudo a2enmod rewrite
 service apache2 restart
 ```
 
+---
+
 Add mediawiki.local as localhost.
 
 ```sh
@@ -77,11 +79,11 @@ vim /etc/hosts
 127.0.0.1 mediawiki.local
 ```
 
+---
+
 Learn latest media wiki core version from here and copy it. (REL1_39 is latest stabil version)
 
-
 https://gerrit.wikimedia.org/g/mediawiki/core
-
 
 First Increase Git's http.postBuffer setting.
 
@@ -92,19 +94,63 @@ git config --global core.compression 0
 
 then Clone the latest project repo. 
 
+---
+
+1.39 version
 
 ```sh
 cd /var/www/
 
-wget https://releases.wikimedia.org/mediawiki/1.39/mediawiki-1.39.9.tar.gz
-tar -xvzf mediawiki-1.39.9.tar.gz
-mv mediawiki-1.39.9 mediawiki
+wget https://releases.wikimedia.org/mediawiki/1.39/mediawiki-1.39.15.tar.gz
+tar -xvzf mediawiki-1.39.15.tar.gz
+mv mediawiki-1.39.15 mediawiki
 
 chown -R www-data:www-data mediawiki
 
 cd mediawiki
-sudo composer install --no-dev
+sudo -u www-data composer install --no-dev
 ```
+
+---
+
+1.45 version
+
+```sh
+git clone https://gerrit.wikimedia.org/r/mediawiki/core.git mediawiki2
+
+chown -R www-data:www-data mediawiki2
+
+cd mediawiki2
+sudo -u www-data composer install --no-dev
+````
+
+---
+
+## INSTALLING DEFAULT SKIN
+
+If you want to install 1.44 version you have to install a default skin.
+
+
+```sh
+cd /var/www/mediawiki2/skins
+
+git clone https://gerrit.wikimedia.org/r/mediawiki/skins/Vector
+```
+
+Enable Skin i LocalSettings.php
+
+```php
+wfLoadSkin( 'Vector' );
+$wgDefaultSkin = 'vector';
+```
+
+Update settings.
+
+```bash
+php maintenance/update.php
+```
+
+---
 
 ## Visit http://mediawiki.local:90/
 
@@ -121,6 +167,7 @@ You will need to download it and put LocalSettings.php file in the base of your 
 👉 http://mediawiki.local/index.php/Special:Version
 ```
 
+---
 
 ## Fixing permission errors:
 
