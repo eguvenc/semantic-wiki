@@ -1,6 +1,15 @@
 
 ## Fixing permission errors for local projects:
 
+All operations.
+
+```bash
+sudo setfacl -R -m u:ersin:rwx /var/www/mezzio
+sudo setfacl -R -m u:www-data:rwx /var/www/mezzio
+sudo setfacl -R -d -m u:ersin:rwx /var/www/mezzio
+sudo setfacl -R -d -m u:www-data:rwx /var/www/mezzio
+```
+
 1. Install ACL for Ubuntu
 
 ```bash

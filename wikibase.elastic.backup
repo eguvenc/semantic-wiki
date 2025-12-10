@@ -1,0 +1,147 @@
+[
+    {
+        "_index": "wikibase_content_first",
+        "_type": "_doc",
+        "_id": "7",
+        "_score": 1,
+        "_source": {
+            "version": 7,
+            "wiki": "wikibase",
+            "page_id": 7,
+            "namespace": 120,
+            "namespace_text": "Item",
+            "title": "Q2",
+            "timestamp": "2025-11-10T21:17:35Z",
+            "create_timestamp": "2025-11-10T21:17:35Z",
+            "redirect": [],
+            "incoming_links": 1,
+            "labels": {
+                "en": [
+                    "Event"
+                ]
+            },
+            "labels_all": null,
+            "descriptions": {
+                "en": [
+                    "Category Event"
+                ]
+            },
+            "statement_keywords": [],
+            "statement_count": 0,
+            "sitelink_count": 0,
+            "category": [],
+            "external_link": [],
+            "outgoing_link": [],
+            "template": [],
+            "text": "Event\nCategory Event",
+            "source_text": "Event\nCategory Event",
+            "text_bytes": 288,
+            "content_model": "wikibase-item",
+            "display_title": null
+        }
+    },
+    {
+        "_index": "wikibase_content_first",
+        "_type": "_doc",
+        "_id": "1",
+        "_score": 1,
+        "_source": {
+            "version": 1,
+            "wiki": "wikibase",
+            "page_id": 1,
+            "namespace": 0,
+            "namespace_text": "",
+            "title": "Main Page",
+            "timestamp": "2025-11-10T15:56:49Z",
+            "create_timestamp": "2025-11-10T15:56:49Z",
+            "category": [],
+            "external_link": [
+                "https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Help:Contents",
+                "https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Manual:Configuration_settings",
+                "https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Manual:FAQ",
+                "https:\/\/lists.wikimedia.org\/postorius\/lists\/mediawiki-announce.lists.wikimedia.org\/",
+                "https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Localisation#Translation_resources",
+                "https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Manual:Combating_spam"
+            ],
+            "outgoing_link": [],
+            "template": [],
+            "text": "MediaWiki has been installed. Consult the User's Guide for information on using the wiki software. Configuration settings list MediaWiki FAQ MediaWiki release mailing list Localise MediaWiki for your language Learn how to combat spam on your wiki",
+            "source_text": "<strong>MediaWiki has been installed.<\/strong>\n\nConsult the [https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Help:Contents User's Guide] for information on using the wiki software.\n\n== Getting started ==\n* [https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Manual:Configuration_settings Configuration settings list]\n* [https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Manual:FAQ MediaWiki FAQ]\n* [https:\/\/lists.wikimedia.org\/postorius\/lists\/mediawiki-announce.lists.wikimedia.org\/ MediaWiki release mailing list]\n* [https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Localisation#Translation_resources Localise MediaWiki for your language]\n* [https:\/\/www.mediawiki.org\/wiki\/Special:MyLanguage\/Manual:Combating_spam Learn how to combat spam on your wiki]",
+            "text_bytes": 755,
+            "content_model": "wikitext",
+            "language": "en",
+            "heading": [
+                "Getting started"
+            ],
+            "opening_text": "MediaWiki has been installed. Consult the User's Guide for information on using the wiki software.",
+            "auxiliary_text": [],
+            "defaultsort": null,
+            "file_text": null,
+            "display_title": null,
+            "redirect": [],
+            "incoming_links": 0
+        }
+    },
+    {
+        "_index": "wikibase_content_first",
+        "_type": "_doc",
+        "_id": "8",
+        "_score": 1,
+        "_source": {
+            "version": 8,
+            "wiki": "wikibase",
+            "page_id": 8,
+            "namespace": 120,
+            "namespace_text": "Item",
+            "title": "Q3",
+            "timestamp": "2025-11-11T07:16:38Z",
+            "create_timestamp": "2025-11-11T07:16:38Z",
+            "redirect": [],
+            "incoming_links": 0,
+            "labels": {
+                "en": [
+                    "Test1 Conference"
+                ]
+            },
+            "labels_all": null,
+            "descriptions": null,
+            "statement_keywords": [
+                "P5",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+            ],
+            "statement_count": 5,
+            "sitelink_count": 0,
+            "category": [],
+            "external_link": [],
+            "outgoing_link": [
+                "Property:P1",
+                "Property:P2",
+                "Property:P3",
+                "Property:P4",
+                "Property:P5",
+                "Item:Q2"
+            ],
+            "template": [],
+            "text": "Test1 Conference",
+            "source_text": "Test1 Conference",
+            "text_bytes": 2389,
+            "content_model": "wikibase-item",
+            "display_title": null,
+            "wbfs_P4": [
+                "2025-11-18T00:00:00Z"
+            ],
+            "wbfs_P3": [
+                "2025-11-12T00:00:00Z"
+            ],
+            "wbfs_P1": [
+                "Test1 Conference"
+            ],
+            "wbfs_P5": [
+                "Q2"
+            ]
+        }
+    }
+]

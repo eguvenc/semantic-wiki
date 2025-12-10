@@ -29,6 +29,15 @@ Wikibase is built on MediaWiki, so first we need to install MediaWiki.
 
 * Then run the **MediaWiki web installer** to generate `LocalSettings.php`.
 
+## Extension Installation Order 
+
+1- Semantic MediaWiki (SMW)
+2- Wikibase
+4- Semantic Wikibase
+5- PageForms ve SRF
+6- Elastica
+7- CirrusSearch ve WikibaseCirrusSearch
+
 ---
 
 ## 3️⃣ Install Wikibase Extensions

@@ -12,7 +12,7 @@
 ### 2. RDF İhracatını Test Et
 
 ```
-http://mediawiki.local/index.php/Special:EntityData/Q1.ttl
+https://wikibase.olobase.dev/index.php/Special:EntityData/Q1.ttl
 ```
 
 Eğer `ttl` dosyası açılıyorsa RDF export aktif demektir.
@@ -24,10 +24,11 @@ Eğer `ttl` dosyası açılıyorsa RDF export aktif demektir.
 Wikidata Query Service reposunu indir:
 
 ```bash
-cd /opt/wdqs-updater
+cd /opt
 git clone https://gerrit.wikimedia.org/r/wikidata/query/rdf wdqs-updater
 cd wdqs-updater
 ```
+
 **WDQS Updater** kısmı Blazegraph’ın kendi `bigdata.jar`’ından çıkmaz. O, ayrı bir projedir: **wikidata/query/rdf**.
 
 Onları kendimiz **build etmemiz** gerekiyor. Aşamaları net olarak anlatayım:
@@ -92,18 +93,11 @@ mvn -v
 Beklenen çıktı (örnek):
 
 ```
-Apache Maven 3.9.9
-Java version: 17.0.x
-```
-
----
-
-### 2. Kaynak Kodunu İndir
-
-```bash
-cd /opt/
-git clone https://gerrit.wikimedia.org/r/wikidata/query/rdf wdqs-updater
-cd wdqs
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: /opt/maven
+Java version: 1.8.0_462, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "6.8.0-71-generic", arch: "amd64", family: "unix"
 ```
 
 ### 1. Wdqs-Updater için kullanıcı oluştur (opsiyonel ama önerilir)
@@ -144,7 +138,6 @@ wdqs-updater/tools/target/query-service-*-SNAPSHOT.jar
 wdqs-updater/tools/runUpdate.sh
 ```
 
-
 ### Wdq Namespace inin Oluşturulması
 
 
@@ -170,13 +163,32 @@ com.bigdata.rdf.store.AbstractTripleStore.statementIdentifiers=false
 com.bigdata.rdf.store.AbstractTripleStore.axiomsClass=com.bigdata.rdf.axioms.NoAxioms
 com.bigdata.namespace.wdq.spo.com.bigdata.btree.BTree.branchingFactor=1024
 com.bigdata.rdf.sail.namespace=wdq
+
+com.bigdata.rdf.sail.lexemes=true
+
 com.bigdata.rdf.store.AbstractTripleStore.quads=true
-com.bigdata.rdf.store.AbstractTripleStore.geoSpatial=false
+com.bigdata.rdf.store.AbstractTripleStore.geoSpatial=true
 com.bigdata.namespace.wdq.lex.com.bigdata.btree.BTree.branchingFactor=400
 com.bigdata.journal.Journal.groupCommit=false
 com.bigdata.rdf.sail.isolatableIndices=true
 ```
 
+
+```bash
+com.bigdata.rdf.sail.truthMaintenance=false
+com.bigdata.rdf.store.AbstractTripleStore.textIndex=false
+com.bigdata.rdf.store.AbstractTripleStore.justify=false
+com.bigdata.rdf.store.AbstractTripleStore.statementIdentifiers=false
+com.bigdata.rdf.store.AbstractTripleStore.axiomsClass=com.bigdata.rdf.axioms.NoAxioms
+com.bigdata.namespace.wdq.spo.com.bigdata.btree.BTree.branchingFactor=1024
+com.bigdata.rdf.sail.namespace=wdq
+com.bigdata.rdf.sail.lexemes=true
+com.bigdata.rdf.store.AbstractTripleStore.quads=true
+com.bigdata.rdf.store.AbstractTripleStore.geoSpatial=true
+com.bigdata.namespace.wdq.lex.com.bigdata.btree.BTree.branchingFactor=400
+com.bigdata.journal.Journal.groupCommit=false
+com.bigdata.rdf.sail.isolatableIndices=true
+```
 
 Triples / Quads: quads seçili (RDF + SPARQL seçtiğin için otomatik quads modunda olur)
 Inference: İstediğin inference yoksa boş bırakabilirsin
@@ -184,9 +196,6 @@ Isolatable indices: İşaretle ✅ (güvenli ve WDQS önerisi)
 Full text index: İstersen devre dışı bırakabilirsin ❌ (WDQS için gerekli değil)
 Enable geospatial: Eğer coğrafi sorgu yapmayacaksan ❌ bırak
 
-
-* Use / Apply:
-Namespace oluşturduktan sonra Use butonuna basmayı unutma, yoksa aktif olmayacaktır.
 
 
 * Kaydet ve çık.
@@ -206,6 +215,12 @@ Arayüzden
 ```
 http://localhost:9999/bigdata/#namespaces
 ```
+
+
+* Use / Apply:
+
+Namespace oluşturduktan sonra Use butonuna basmayı unutma, yoksa aktif olmayacaktır.
+
 
 namespace ler içinde wdq gözükmeli. Use seçeneğine tıklayarak "wdq" namespace ini aktif et.`
 
@@ -227,16 +242,10 @@ Label kısmına Q1 yazın ve kaydedin. Açıklamaya test yazabilirsiniz.
 MediaWiki’den dump al:
 
 ```bash
-php /var/www/mediawiki/extensions/Wikibase/repo/maintenance/dumpRdf.php --format=ttl > dump.ttl
+cd /var/www/wiki/
+
+php ./extensions/Wikibase/repo/maintenance/dumpRdf.php --format=ttl > dump.ttl
 ```
-
-Blazegraph’a yükle:
-
-curl -X POST \
-  -H 'Content-Type:text/turtle' \
-  --data-binary @dump.ttl \
-  http://localhost:9999/bigdata/namespace/kb/sparql
-
 
 Blazegraph’a yükle:
 
@@ -244,9 +253,14 @@ Blazegraph’a yükle:
 curl -X POST \
   -H 'Content-Type:text/turtle' \
   --data-binary @dump.ttl \
-  http://localhost:9999/bigdata/namespace/kb/sparql
+  http://localhost:9999/bigdata/namespace/wdq/sparql
 ```
 
+Beklenen çıltı:
+
+```xml
+<?xml version="1.0"?><data modified="5245" milliseconds="744"/>
+```
 
 Test edelim:
 
@@ -306,19 +320,82 @@ java -cp target/wikidata-query-tools-*-SNAPSHOT-jar-with-dependencies.jar ...
 to
 
 ```bash
-java -cp /opt/wdqs-updater/tools/target/wikidata-query-tools-*-SNAPSHOT-jar-with-dependencies.jar ...
+java -cp /opt/wdqs-updater/tools/target/wikidata-query-tools-0.3.160-SNAPSHOT-jar-with-dependencies.jar
+```
+
+Save and exit.
+
+
+Create dump folder and give write permissions:
+
+```bash
+mkdir -p /opt/wdqs-updater/dumps
 ```
 
 `runUpdate.sh` ile çalışır:
 
+
 ```bash
 sh /opt/wdqs-updater/tools/runUpdate.sh \
-  --sparqlUrl http://localhost:9999/bigdata/namespace/wdq/sparql \
-  --wikibaseHost mediawiki.local \
-  --dumpDir /opt/wdqs-updater/ \
+  --wikibaseHost wikibase.olobase.dev \
+  --wikibaseScheme https \
+  --apiPath /api.php \
+  --dumpDir /opt/wdqs-updater/dumps \
   --threadCount 10 \
-  --pollDelay 10
+  --pollDelay 10 \
+  --init
 ```
+
+```bash
+sh /opt/wdqs-updater/tools/runUpdate.sh \
+    --sparqlUrl "http://localhost:9999/bigdata/namespace/wdq/sparql" \
+    --wikibaseHost wikibase.olobase.dev \
+    --wikibaseScheme https \
+    --apiPath /api.php \
+    --dumpDir /opt/wdqs-updater/dumps \
+    --threadCount 10 \
+    --pollDelay 10 \
+    --init
+```
+
+
+The options available are:
+  [--apiPath value] : Path to mediawiki api.php
+  [--batchSize -b value] : Number of recent changes fetched at a time.
+  [--clusters -c value...] : Kafka cluster prefixes (e.g. eqiad, codfw), comma or space separated
+  [--commonsUri value] : Commons concept URI for RDF entities
+  [--conceptUri -U value] : Wikibase concept URI for RDF entities
+  [--constraints] : Load Wikibase constraints data
+  [--consumer -C value] : Set consumer ID for Kafka poller
+  [--dumpDir value] : Set RDF dumping in this directory
+  [--entityDataPath value] : Path to Special:EntityData
+  [--entityNamespaces value] : If specified must be numerical indexes of Item and Property namespaces that defined in Wikibase repository, comma separated.
+  [--help] : Show this message
+  [--idrange value] : If specified must be <start>-<end>. Ids are iterated instead of recent changes. Start and end are inclusive.
+  [--ids value...] : If specified must be <id> or list of <id>, comma or space separated.
+  [--import-async] : Import batch asynchronously
+  [--init -I] : Initialize last update time to start time
+  [--kafka -K value] : If set, use Kafka polling with the argument as the broker server
+  [--keepTypes] : Preserve all types
+  [--labelLanguage value...] : Only import labels, aliases, and descriptions in these languages.
+  [--metricDomain value] : JMX metrics domain
+  [--oldRevision value] : How old (hours) should revision be to start using latest revision fetch
+  [--pollDelay -d value] : Poll delay when no updates found
+  [--resetKafka] : Reset Kafka offsets
+  [--singleLabel value...] : Only import a single label and description using the languages specified as a fallback list. If there isn't a label in any of the specified languages then no label is imported.  Ditto for description.
+  [--skipSiteLinks] : Skip site links
+  [--skolemize] : Skolemization of blank nodes, expects the blank nodes to have uniquely identifiable labels
+  --sparqlUrl -u value : URL to post updates and queries.
+  [--start -s value] : Start time in 2015-02-11T17:11:08Z or 20150211170100 format.
+  [--tailPoller -T value] : Use secondary poller with given gap (seconds) to catch up missed updates. Applies only to RecentChanges poller.
+  [--threadCount -t value] : Thread count (for wikibase entity fetch)
+  [--verbose -v] : Verbose mode
+  [--verify -V] : Verify updates (may have performance impact)
+  [--wikibaseHost -w value] : Wikibase host
+  [--wikibaseScheme -S value] : Wikidata url scheme
+  [--wikibaseUrl -W value] : Wikibase instance base URL
+
+
 
 -h → Blazegraph SPARQL endpoint
 -s → MediaWiki API endpoint

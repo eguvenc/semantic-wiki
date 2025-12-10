@@ -8,13 +8,41 @@
 * **Java 11 (OpenJDK)** kurulu
 * **wget, curl** yüklü
 
-Kontrol et:
+## Installing Java 17
+
+
+```bash
+sudo update-alternatives --config java
+sudo apt update
+sudo apt install openjdk-17-jdk -y
+```
+
+Sistemde birden fazla Java sürümü varsa:
+
+```bash
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-17-openjdk-amd64/bin/java 2
+sudo update-alternatives --config java
+```
+
+Burada listeden **Java 17**’yi seç.
+
+Aynı işlemi javac için de yapabilirsin:
+
+```bash
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac 2
+sudo update-alternatives --config javac
+```
+
+---
+
+### 4️⃣ Doğrula
 
 ```bash
 java -version
+javac -version
 ```
 
-Java 11 (veya 17) görmelisin.
+Çıktı Java 17 olmalı.
 
 ---
 
@@ -29,9 +57,61 @@ wget https://github.com/blazegraph/database/releases/download/BLAZEGRAPH_2_1_6_R
 
 2. Çalıştır:
 
+4GB İle
+
 ```bash
 java -server -Xmx4g -jar bigdata.jar &
 ```
+
+1GB RAM İle
+
+```bash
+java -server -Xmx1g -Djetty.host=0.0.0.0 -Djetty.port=9999 -jar bigdata.jar &
+```
+
+Kill 
+
+```
+sudo lsof -i :9999
+```
+
+```
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+java    87227 root   14u  IPv6 814265      0t0  TCP *:9999 (LISTEN)
+```
+
+```
+sudo kill -9 87227
+```
+
+Sadece dış ip den girilebilir.
+
+```
+http://41.220.50.212:9999/bigdata
+```
+
+## DNS ile: blazegraph.olobase.dev  
+
+<VirtualHost *:80>
+    ServerName blazegraph.olobase.dev
+
+    # Hata ve Erişim günlüklerinin yolu
+    ErrorLog ${APACHE_LOG_DIR}/blazegraph-error.log
+    CustomLog ${APACHE_LOG_DIR}/blazegraph-access.log combined
+
+    # ----------------------------------------------------
+    # Ters Proxy Yönlendirmesi (Blazegraph'e)
+    # ----------------------------------------------------
+    <Location />
+        # Proxy isteğini Blazegraph'in çalıştığı 9999 portuna yönlendir
+        ProxyPass http://127.0.0.1:9999/
+        ProxyPassReverse http://127.0.0.1:9999/
+
+        # Gerekli başlıkların iletilmesi
+        ProxyPreserveHost On
+    </Location>
+
+</VirtualHost>
 
 Servis Olarak Ayarlama 
 
@@ -71,7 +151,7 @@ After=network.target
 [Service]
 User=blazegraph
 WorkingDirectory=/opt/wdqs-blazegraph
-ExecStart=/usr/bin/java -server -Xmx4g -jar /opt/wdqs-blazegraph/bigdata.jar
+ExecStart=/usr/bin/java -server -Xmx1g -jar /opt/wdqs-blazegraph/bigdata.jar
 Restart=on-failure
 SuccessExitStatus=143
 
@@ -105,7 +185,7 @@ Blazegraph varsayılan olarak `http://localhost:9999/bigdata/` adresinden çalı
 SPARQL endpoint:
 
 ```
-http://localhost:9999/bigdata/sparql
+http://41.220.50.212::9999/bigdata/sparql
 ```
 
 

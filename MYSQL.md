@@ -14,6 +14,12 @@ sudo mysql_secure_installation
 ```
 https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-22-04
 
+```
+sudo mysql
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Mbry8992@';
+```
+
 
 ### Enable/Disable Full Group By Mode
 
@@ -46,6 +52,9 @@ flush privileges;
 vim /etc/mysql/mysql.conf.d/mysqld.cnf 
 ```
 
+DROP USER 'admin'@'46.224.50.212';
+
+
 ```sh
 bind-address            = 0.0.0.0
 mysqlx-bind-address     = 127.0.0.1
@@ -62,7 +71,7 @@ key_buffer_size         = 16M
 ### For prod server
 
 ```sh
-CREATE USER 'admin'@'46.2.244.250' IDENTIFIED WITH mysql_native_password BY '12345678';
+CREATE USER 'admin'@'46.224.50.212' IDENTIFIED WITH mysql_native_password BY 'Mbry8992@';
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'46.2.244.250' WITH GRANT OPTION;
 flush privileges;
 ```
@@ -112,7 +121,7 @@ vim /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 
 ```
-bind_address = 0.0.0.0
+bind-address = 0.0.0.0
 mysqlx-bind-address = 127.0.0.1
 
 character-set-server = utf8
@@ -133,7 +142,10 @@ FLUSH PRIVILEGES;
 > Note: 213.194.73.183 is static ip address of your location.
 
 Kullanıcı listelemek;
+
+```
 SELECT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') FROM mysql.user;
+```
 
 Delete the user;
 

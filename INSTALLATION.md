@@ -113,10 +113,11 @@ sudo -u www-data composer install --no-dev
 
 ---
 
-1.45 version
+1.44 version
 
 ```sh
 git clone https://gerrit.wikimedia.org/r/mediawiki/core.git mediawiki2
+git checkout REL1_44
 
 chown -R www-data:www-data mediawiki2
 
@@ -135,6 +136,8 @@ If you want to install 1.44 version you have to install a default skin.
 cd /var/www/mediawiki2/skins
 
 git clone https://gerrit.wikimedia.org/r/mediawiki/skins/Vector
+cd skins/Vector/
+git checkout REL1_44
 ```
 
 Enable Skin i LocalSettings.php

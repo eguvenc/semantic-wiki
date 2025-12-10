@@ -17,6 +17,8 @@ Enable Apache2 Mode Rewrite (.htaccess) and Setting Your ServerName
 
 ```php
 sudo a2enmod rewrite
+sudo systemctl enable apache2
+service apache2 restart
 ```
 
 Go
