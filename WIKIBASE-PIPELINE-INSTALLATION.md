@@ -39,8 +39,71 @@ DB_USER=admin
 DB_PASS=set-a-password
 ```
 
+## CRON JOBS
+
+Şu anda job runner elastic-search item larını indexlere eklemiyor. o yüzden kuyruk işlerini ana sunucudaki cron job a ekleyerek şimdilik çözüyoruz test sunucusunda.
+
+jobrunner.sh
+
 ```sh
-docker compose up --build -d
+#!/bin/bash
+set -e
+
+while true; do
+    docker exec -d wbs-deploy-wikibase-1 php maintenance/run.php runJobs --wait --maxjobs=100 --conf /config/LocalSettings.php
+    sleep 5
+done
+```
+
+```bash
+chmod +x /root/jobrunner.sh
+```
+
+Crontab a ekle
+
+
+```bash
+crontab -e
+# every hour clean docker overlays & logs
+
+@reboot /root/jobrunner.sh
+```
+
+## Starting / Stopping Docker Services (JOBRUNNER SORUNU ÇÖZÜLÜRSE EĞER)
+
+Before running, the following files must be copied to /root/wikibase-release-pipeline/deploy.
+
+- docker.sh
+- jobrunner-entrypoint.sh
+- composer.local.json
+
+**WARNING:** To make the job queue "php maintenance/run.php run Jobs" work with cron jobs, the "wikibase-jobrunner" container /jobrunner-entrypoint.sh needs to be updated as follows.
+This command changes the /jobrunner-entrypoint.sh content. 
+
+[jobrunner-entrypoint.sh](JOB_RUNNER.md)
+
+```yml
+wikibase-jobrunner:
+  volumes:
+    - ./config:/config:z
+    - ./config/extensions:/var/www/html/extensions/extensions:z
+    - ./config/Extensions.php:/var/www/html/LocalSettings.d/90_UserDefinedExtensions.php:z
+    - wikibase-image-data:/var/www/html/images
+    - quickstatements-data:/quickstatements/data
+    - ./jobrunner-entrypoint.sh:/jobrunner-entrypoint.sh 
+```
+
+```sh
+wikibase-release-pipeline/deploy$  docker compose up --build -d
+wikibase-release-pipeline/deploy$  docker compose down
+```
+
+
+## Watching logs:
+
+```sh
+docker compose logs wikibase --tail=100
+docker compose logs wikibase-jobrunner --tail=100
 ```
 
 ## Set MediaWiki Debugs On
@@ -86,6 +149,7 @@ services:
       - ./config/Extensions.php:/var/www/html/LocalSettings.d/90_UserDefinedExtensions.php:z
       - wikibase-image-data:/var/www/html/images
       - quickstatements-data:/quickstatements/data
+      - ./jobrunner-entrypoint.sh:/jobrunner-entrypoint.sh 
     environment:
       METADATA_CALLBACK: ${METADATA_CALLBACK}
       MW_ADMIN_NAME: ${MW_ADMIN_NAME}
@@ -112,8 +176,13 @@ services:
       wikibase:
         condition: service_healthy
     restart: unless-stopped
-    volumes_from:
-      - wikibase
+    volumes:
+      - ./config:/config:z
+      - ./config/extensions:/var/www/html/extensions/extensions:z
+      - ./config/Extensions.php:/var/www/html/LocalSettings.d/90_UserDefinedExtensions.php:z
+      - wikibase-image-data:/var/www/html/images
+      - quickstatements-data:/quickstatements/data
+      - ./jobrunner-entrypoint.sh:/jobrunner-entrypoint.sh 
 
   mysql:
     image: mariadb:10.11
@@ -277,18 +346,10 @@ volumes:
   traefik-letsencrypt-data:
 ```
 
-## Watching logs:
-
-```sh
-docker compose logs wikibase --tail=100
-```
 
 ## Installing Wikibase Faceted Search Extension
 
-
-```sh
 ls -l /var/www/html/composer.local.json
-```
 
 ## Installing Composer
 
@@ -323,6 +384,7 @@ Giving write permissions to Local Json file
 
 ```sh
 chown root:root /var/www/html/composer.local.json
+chown root:root /var/www/html/composer.lock
 ```
 
 ## Installation FACETED SEARCH Extension
@@ -359,14 +421,21 @@ wfLoadExtension( 'WikibaseFacetedSearch' );
 Updating composer and local packages
 
 ```bash
+composer update --no-dev
+```
+
+If it does not work try that
+
+```bash
 rm -rf composer.lock
 composer update --no-dev
 ```
 
+
 ```bash
-php maintenance/update.php
-php maintenance/showJobs.php
-php maintenance/runJobs.php
+php maintenance/run.php update
+php maintenance/run.php showJobs
+php maintenance/run.php runJobs
 ```
 
 Rebuild index
@@ -438,10 +507,9 @@ Update FacetedSearch Index.
 
 
 ```bash
-php maintenance/run.php CirrusSearch:UpdateSearchIndexConfig
+php maintenance/run.php CirrusSearch:UpdateSearchIndexConfig # wikibase itemlarını indexler
 php maintenance/run.php CirrusSearch:ForceSearchIndex --skipParse
 php maintenance/run.php CirrusSearch:ForceSearchIndex --skipLinks --indexOnSkip
-php maintenance/run.php WikibaseCirrusSearch:UpdateSearchIndex  # wikibase itemlarını indexler
 ```
 
 ## User Defined Config File

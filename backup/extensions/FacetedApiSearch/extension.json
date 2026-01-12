@@ -1,0 +1,32 @@
+{
+  "name": "FacetedApiSearch",
+  "version": "1.0.0",
+  "author": "Ersin Güvenç",
+  "description": "Custom API module for querying Faceted Search indices from Elasticsearch.",
+  "type": "extension",
+  "AutoloadNamespaces": {
+      "FacetedApiSearch\\": "includes/"
+  },
+  "MessagesDirs": {
+    "FacetedApiSearch": ["i18n"]
+  },
+  "ResourceModules": {},
+  "APIModules": {
+    "facetedapisearch": "FacetedApiSearch\\ApiFacetedSearch"
+  },
+  "config": {
+      "WikibaseRootPath": {
+          "value": "/var/www/html",
+          "description": "Path to the root of the Wikibase installation"
+      },
+      "ElasticsearchBaseUrl": {
+          "value": "http://localhost:9200",
+          "description": "Base URL of Elasticsearch"
+      },
+      "ElasticsearchIndexName": {
+          "value": "wikibase_content_first",
+          "description": "Wikibase Elasticsearch index name to query"
+      }
+  },
+  "manifest_version": 2
+}
