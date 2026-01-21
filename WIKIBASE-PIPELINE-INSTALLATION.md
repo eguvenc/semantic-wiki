@@ -546,7 +546,23 @@ $wgElasticsearchBaseUrl = "http://wbs-deploy-elasticsearch-1:9200";
 $wgFacetedSuggestProperties = [
     'P1',
 ];
-```
+
+
+
+
+error_reporting( E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED );
+
+wfLoadExtension( 'ConfirmAccount' );
+wfLoadExtension( 'ConfirmEdit' );
+
+
+
+
+
+
+
+
+
 
 ## QUICK STATEMENTS
 

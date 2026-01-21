@@ -11,7 +11,7 @@ $wgGroupPermissions['*']['createaccount'] = true;
 // API üzerinden hesap açmaya izin ver
 $wgEnableWriteAPI = true;
 
-$apiSecret = 'xxx'; // Strong secret token for API write operations
+$apiSecret = 'XXX'; // Strong secret token for API write operations
 if (
     isset($_SERVER['HTTP_X_API_SECRET']) 
     && $apiSecret == trim($_SERVER['HTTP_X_API_SECRET'])

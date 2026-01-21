@@ -14,15 +14,39 @@
 // here in Wikibase Suite Deploy you need to put
 //   wfLoadExtension( 'extensions/WikibaseLexeme' );
 
+error_reporting( E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED );
+
+wfLoadExtension( 'ConfirmAccount' );
+wfLoadExtension( 'ConfirmEdit' );
+wfLoadExtension( 'ConfirmEdit/QuestyCaptcha' ); // Alt modülü mutlaka yükleyin
 wfLoadExtension( 'WikibaseFacetedSearch' );
 wfLoadExtension( 'extensions/FacetedApiSearch' );
 
-wfLoadExtension( 'ConfirmEdit' );
-wfLoadExtension( 'ConfirmEdit/QuestyCaptcha' ); // Alt modülü mutlaka yükleyin
+$wgGroupPermissions['*']['createaccount'] = false; // REQUIRED to enforce account requests via this extension
+$wgGroupPermissions['bureaucrat']['createaccount'] = true; // optional to allow account creation by this trusted user group
+$wgGroupPermissions['bureaucrat']['confirmaccount'] = true;
+$wgGroupPermissions['sysop']['confirmaccount'] = true;
 
-// Anonymous users can create accounts
-$wgGroupPermissions['*']['createaccount'] = true;
-// API üzerinden hesap açmaya izin ver
+// disable Captcha for account creation and requestaccount by default
+$wgCaptchaClass = 'QuestyCaptcha';
+$wgCaptchaTriggers['createaccount'] = false;
+$wgCaptchaTriggers['requestaccount'] = false;
+
+# ConfirmAccount is enabled
+$wgConfirmAccountRequestFormItems = [
+    'UserName'   => [ 'enabled' => true ],
+    'RealName'   => [ 'enabled' => true ],
+    'Email'      => [ 'enabled' => true ],
+    'Biography'  => [ 'enabled' => false ],
+    'AreasOfInterest' => [ 'enabled' => false ],
+];
+# Mail confirmation is mandatory
+$wgConfirmAccountEmailEnabled = true;
+# Admin confirmation is mandatory
+$wgConfirmAccountApproval = true;
+# Mail confirmation open
+$wgEmailAuthentication = true;
+# RequestAccount API open
 $wgEnableWriteAPI = true;
 
 $apiSecret = 'xxx'; // Strong secret token for API write operations
@@ -82,19 +106,18 @@ $wgSMTP = [
 $wgPasswordSender = 'eguvenc@gmail.com';
 $wgNoReplyAddress = 'eguvenc@gmail.com';
 
-
 # Development error & debug settings
 $wgDevelopmentWarnings = true;
 $wgShowExceptionDetails = true;
-$wgShowDBErrorBacktrace = true;
-$wgDebugToolbar = true;
+$wgShowDBErrorBacktrace = false;
+$wgDebugToolbar = false;
 
 # OAuth ve email loglarını etkinleştir
 $wgDebugLogGroups['oauth'] = '/var/log/mediawiki/oauth.log';
 $wgDebugLogGroups['email'] = '/var/log/mediawiki/email.log';
 
 # Tüm debug logları tek dosyada da toplayabilirsin
-$wgDebugLogFile = '/var/log/mediawiki/mw.debug.log';
+// $wgDebugLogFile = '/var/log/mediawiki/mw.debug.log';
 # OAuth debug
 $wgOAuthDebug = true;
 
@@ -105,7 +128,7 @@ $wgElasticsearchBaseUrl = "http://wbs-deploy-elasticsearch-1:9200";
 $wgFacetedSuggestProperties = [
     'P1',
 ];
-$wgFacetedSecretToken = 'eUK4ERs5dTya'; // Set a strong secret token for API write operations
+$wgFacetedSecretToken = $apiSecret; // Set a strong secret token for API write operations
 $wgGroupPermissions['bot']['noratelimit'] = true;
 
 // https://github.com/wmde/wikibase-release-pipeline/issues/383
