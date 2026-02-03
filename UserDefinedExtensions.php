@@ -16,56 +16,35 @@
 
 error_reporting( E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED );
 
-wfLoadExtension( 'ConfirmAccount' );
-wfLoadExtension( 'ConfirmEdit' );
-wfLoadExtension( 'ConfirmEdit/QuestyCaptcha' ); // Alt modülü mutlaka yükleyin
+// wfLoadExtension( 'ConfirmAccount' );
 wfLoadExtension( 'WikibaseFacetedSearch' );
 wfLoadExtension( 'extensions/FacetedApiSearch' );
+// wfLoadExtension( 'extensions/ConfirmAccountHook' );
 
-$wgGroupPermissions['*']['createaccount'] = false; // REQUIRED to enforce account requests via this extension
-$wgGroupPermissions['bureaucrat']['createaccount'] = true; // optional to allow account creation by this trusted user group
-$wgGroupPermissions['bureaucrat']['confirmaccount'] = true;
-$wgGroupPermissions['sysop']['confirmaccount'] = true;
+// Captcha Support for MediaWiki
+wfLoadExtension( 'ConfirmEdit' );
+wfLoadExtension( 'ConfirmEdit/QuestyCaptcha' ); // Alt modülü mutlaka yükleyin
+
+// $wgGroupPermissions['*']['createaccount'] = true; // REQUIRED to enforce account requests via this extension
+
+// Varsayılan tüm kullanıcıların createaccount hakkı yok
+$wgGroupPermissions['*']['createaccount'] = false;  // herkes için kapalı
+$wgGroupPermissions['user']['createaccount'] = false; // giriş yapan normal kullanıcılar için kapalı
+// Sadece bot grubundakilere izin ver
+$wgGroupPermissions['bot']['createaccount'] = true;
+
+// $wgGroupPermissions['bureaucrat']['createaccount'] = true;
+// $wgGroupPermissions['sysop']['createaccount'] = true;
 
 // disable Captcha for account creation and requestaccount by default
 $wgCaptchaClass = 'QuestyCaptcha';
 $wgCaptchaTriggers['createaccount'] = false;
 $wgCaptchaTriggers['requestaccount'] = false;
 
-# ConfirmAccount is enabled
-$wgConfirmAccountRequestFormItems = [
-    'UserName'   => [ 'enabled' => true ],
-    'RealName'   => [ 'enabled' => true ],
-    'Email'      => [ 'enabled' => true ],
-    'Biography'  => [ 'enabled' => false ],
-    'AreasOfInterest' => [ 'enabled' => false ],
-];
-# Mail confirmation is mandatory
-$wgConfirmAccountEmailEnabled = true;
-# Admin confirmation is mandatory
-$wgConfirmAccountApproval = true;
-# Mail confirmation open
-$wgEmailAuthentication = true;
-# RequestAccount API open
+# Allow write access to the API
 $wgEnableWriteAPI = true;
 
-$apiSecret = 'xxx'; // Strong secret token for API write operations
-if (
-    isset($_SERVER['HTTP_X_API_SECRET']) 
-    && $apiSecret == trim($_SERVER['HTTP_X_API_SECRET'])
-) {
-    // Basit bir soru-cevap tanımlayın (Hata almamak için şarttır)
-    $wgCaptchaQuestions = [
-        'Türkiye\'nin başkenti neresidir?' => 'Ankara',
-    ];
-    // Tetikleyicileri isteğinize göre açık/kapalı yapın
-    $wgCaptchaTriggers['edit']          = true; 
-    $wgCaptchaTriggers['create']        = true; 
-    $wgCaptchaTriggers['addurl']        = true; 
-    $wgCaptchaTriggers['createaccount'] = false;
-    $wgCaptchaTriggers['badlogin']      = true;
-}
-
+$apiSecret = ''; // Strong secret token for API write operations
 /**
  * OAuth settings for Wikibase suite.
  */
@@ -99,7 +78,7 @@ $wgSMTP = [
     'port'     => 587,                // TLS için port
     'auth'     => true,
     'username' => 'eguvenc@gmail.com',  // Gmail adresiniz
-    'password' => 'xxx',     // Gmail uygulama şifresi
+    'password' => '',     // Gmail uygulama şifresi
     'secure'   => 'tls',               // TLS kullanımı
 ];
 // Giden e-postaların 'Kimden' adresi (GMAIL adresi ile aynı olmalıdır)
@@ -151,6 +130,14 @@ $wgCirrusSearchRescoreProfiles['wikibase'] = [
         ]
     ]
 ];
+
+// sudo touch /tmp/confirm_test.log && sudo chown www-data:www-data /tmp/confirm_test.log
+/*
+$wgHooks['ConfirmAccount::approved'][] = function ($user, $accountRequest) {
+    file_put_contents('/tmp/confirm_test.log', date('Y-m-d H:i:s') . " - " . $user->getId() . ',' . $user->getName() . "\n", FILE_APPEND);
+    error_log("ConfirmAccount hook triggered for " . $user->getName());
+};
+*/
 
 // Make sure that it's also mounted into the jobrunner since that container is doing the actual indexing. 
 // (see https://github.com/wmde/wikibase-release-pipeline/pull/390/files)
