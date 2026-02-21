@@ -113,6 +113,8 @@ SELECT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') FROM mysql.user;
 +------------------------------------------------------+
 ```
 
+## REMOTE ACCESS
+
 ### MYSQL Server 8 Remote Access Configruation
 
 
@@ -141,7 +143,16 @@ FLUSH PRIVILEGES;
 
 > Note: 213.194.73.183 is static ip address of your location.
 
-Kullanıcı listelemek;
+
+## Connect from any IP address (caution: security risk!).
+
+
+CREATE USER 'admin'@'%' IDENTIFIED WITH mysql_native_password BY '';
+GRANT ALL PRIVILEGES ON db_name.* TO 'admin'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+
+## Listing Users;
 
 ```
 SELECT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') FROM mysql.user;
